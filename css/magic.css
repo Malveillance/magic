@@ -183,6 +183,17 @@ input[type="text"].form-control {
 	border-bottom-left-radius: calc(.3rem - 1px);
 }
 
+/* Step */
 .dnd-step-input {
-	max-width: 120px;
+	max-width: 111px;
+}
+
+.dnd-step-input span {
+	width: 56px;
+	justify-content: center;
+	9as
+}
+
+.dnd-step-input input[type="text"] {
+	text-align: center;
 }
