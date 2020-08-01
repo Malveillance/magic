@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<title>Magic</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap">
+	<link rel="stylesheet" href="css/magic.css">
+</head>
+<body class="pt-3">
+	<div class="container main">
+
+		<!-- Menu -->
+		<nav>
+			<div class="nav nav-tabs" role="tablist">
+				<a class="nav-item nav-link active" data-toggle="tab" href="#nav-dnd" role="tab">&lt;dnd&gt;</a>
+				<a class="nav-item nav-link" data-toggle="tab" href="#nav-label" role="tab">&lt;label&gt;</a>
+			</div>
+		</nav>
+
+		<div class="tab-content">
+
+			<!-- <dnd> tab -->
+			<div class="tab-pane fade show active" id="nav-dnd" role="tabpanel">
+
+				<!-- Controls -->
+				<div class="row">
+					<div class="col-3 mt-3">
+						<div class="dnd-base-group">
+							<span class="group-title">Основа</span>
+							<div class="custom-file">
+								<input type="file" class="custom-file-input" id="dnd-base" accept="image/pjpeg,image/png" title>
+								<label class="custom-file-label" for="dnd-base" id="dnd-base-name">Выберите файл</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-2 mt-3">
+						<div class="dnd-base-group fade">
+							<span class="group-title">Решение</span>
+							<input type="text" id="dnd-solution" class="form-control">
+						</div>
+					</div>
+
+					<div class="col-2 mt-3">
+						<div class="dnd-base-group fade">
+							<span class="group-title">Размер</span>
+							<div class="input-group">
+								<input type="text" id="dnd-width" class="form-control" disabled>
+								<input type="text" id="dnd-height" class="form-control" disabled>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-auto mt-3">
+						<div class="dnd-base-group fade">
+							<span class="group-title">Плашки</span>
+							<button type="button" class="btn btn-primary" id="dnd-add-shape">Добавить</button>
+							<input type="file" class="d-none" id="dnd-shape" accept="image/pjpeg,image/png" multiple title>
+						</div>
+					</div>
+
+					<div class="col-2 mt-3">
+						<div class="dnd-shape-group fade">
+							<span class="group-title">Прозрачность</span>
+							<div class="slider">
+								<input type="range" id="dnd-opacity" min="0.4" max="1" step="0.1" value="1" title="100%">
+							</div>
+						</div>
+					</div>
+
+					<div class="col mt-3 d-flex justify-content-end align-items-end">
+						<div class="dnd-shape-group fade">
+							<button type="button" class="btn btn-success" data-toggle="modal" data-target="#dnd-modal">Сверстать</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Canvas -->
+				<div class="row">
+					<div class="col-12 mt-5 mb-5 d-flex justify-content-center">
+						<div class="dnd-canvas"></div>
+					</div>
+				</div>
+
+				<!-- Modal -->
+				<div class="modal fade" id="dnd-modal" tabindex="-1" role="dialog" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-body">
+								<span class="group-title">Код</span>
+								<textarea class="dnd-code form-control" rows="20"></textarea>
+							</div>
+							<div class="modal-footer-mod">
+								<div class="input-group dnd-step-input">
+									<div class="input-group-prepend">
+										<span class="input-group-text">Шаг</span>
+									</div>
+									<input type="text" class="form-control" id="dnd-step" value="50">
+								</div>
+								<div class="d-flex">
+									<button type="button" class="btn btn-primary" id="dnd-copy">Копировать</button>
+									<button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Закрыть</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- <label> tab -->
+			<div class="tab-pane fade" id="nav-label" role="tabpanel">
+				<div class="mt-5 d-flex justify-content-center">
+					<img src="img/peperage.png" alt="false">
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<!-- Scripts -->
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+	<script src="js/magic.js"></script>
+</body>
+</html>
