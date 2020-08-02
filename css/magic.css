@@ -1,86 +1,211 @@
 /* Various */
-.container.main {
-	min-width: 1140px;
+.container-fixed {
+	width: 1140px;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: auto;
 }
 
 .nav-tabs .nav-item {
-	font-family: 'Roboto Condensed', sans-serif;
-	font-size: 19px;
+	font-family: Roboto Condensed, sans-serif;
+	font-size: 1.1875rem;
 	font-weight: 300;
 }
 
-.group-title {
-	display: block;
-	margin-bottom: .25rem;
+.nav-item sup {
+	color: #f00;
 }
 
-input[type="text"].form-control {
+.form-control,
+.btn {
 	height: auto;
+	min-height: calc(1.5em + 0.75rem + 2px);
 }
 
-.custom-file-label::after {
-	content: 'Обзор';
-}
-
-.dnd-base-group.fade:not(.show),
-.dnd-shape-group.fade:not(.show) {
+/* Controls */
+.control.fade:not(.show) {
 	visibility: hidden;
 }
 
+.control .title {
+	margin-bottom: 0.375rem;
+}
+
+.control .title[data-badge]::after {
+	content: attr(data-badge);
+	margin-left: 0.375rem;
+	padding: 0.0625rem 0.25rem;
+	font-size: 0.875rem;
+	background-color: #e9ecef;
+	border: 1px solid #ced4da;
+	border-radius: 0.25rem;
+}
+
 /* Canvas */
-.dnd-canvas {
+.canvas {
 	position: relative;
+	transition: opacity 0.15s ease-in-out;
 }
 
-/* Base */
-.dnd-canvas .base {
+.canvas .base,
+.canvas .shape {
 	background-size: contain;
 }
 
-/* Shape */
-.dnd-canvas .shape {
-	position: absolute;
-	background-size: contain;
-}
-
-.dnd-canvas .shape:not(.ui-draggable-dragging) {
-	cursor: grab;
-}
-
-.dnd-canvas .shape.selected {
-	z-index: 1;
-}
-
-.dnd-canvas .shape.selected::before,
-.dnd-canvas .shape.selected::after {
+.canvas .shape.selected::before,
+.canvas .shape.selected::after {
 	position: absolute;
 	padding: 0 2px;
 	font-size: 10px;
 	color: #fff;
 	background-color: #000;
-	opacity: .6;
+	opacity: 0.65;
 }
 
-.dnd-canvas .shape.selected::before {
+.canvas .shape.selected::before {
 	content: attr(data-file);
 }
 
-.dnd-canvas .shape.selected::after {
+.canvas .shape.selected::after {
 	content: attr(data-size);
 	right: 0;
 	bottom: 0;
 }
 
-/* Slider */
+.canvas .label {
+	position: absolute;
+	line-height: 27px;
+	font-family: Trebuchet MS, sans-serif, Arial;
+	font-size: 24px;
+	color: #000;
+}
+
+.canvas .label.selected {
+	border-bottom: 1px solid #000;
+}
+
+.canvas .label.selected::before,
+.canvas .label.selected::after {
+	position: absolute;
+	padding: 0 2px;
+	font-size: 10px;
+	color: #fff;
+	background-color: #000;
+	opacity: 0.65;
+}
+
+.canvas .label.selected::after {
+	content: attr(data-pos);
+	right: 0;
+	top: 0;
+}
+
+.canvas .ui-draggable:not(.ui-draggable-dragging) {
+	cursor: grab;
+}
+
+.canvas .ui-draggable.selected {
+	z-index: 1;
+}
+
+/* Modal */
+.modal .code {
+	min-height: calc(212px + 0.75rem);
+	max-height: calc(527px + 0.75rem);
+	font-family: Menlo, Consolas, DejaVu Sans Mono, monospace;
+	font-size: 0.875rem;
+	tab-size: 4;
+	-moz-tab-size: 4;
+}
+
+.modal-footer-mod {
+	display: flex;
+	justify-content: space-between;
+	padding: 0 1rem 1rem;
+	border-bottom-right-radius: calc(0.3rem - 1px);
+	border-bottom-left-radius: calc(0.3rem - 1px);
+}
+
+/* UI: File input from Bootstrap 5 */
+.form-file {
+	position: relative;
+}
+
+.form-file-input {
+	position: relative;
+	z-index: 2;
+	width: 100%;
+	height: calc(1.5em + 0.75rem + 2px);
+	margin: 0;
+	opacity: 0;
+}
+
+.form-file-input:focus-within ~ .form-file-label {
+	border-color: #80bdff;
+	box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-file-input:disabled ~ .form-file-label .form-file-text {
+	background-color: #e9ecef;
+}
+
+.form-file-label {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	z-index: 1;
+	display: flex;
+	height: calc(1.5em + 0.75rem + 2px);
+	margin: 0;
+	border-color: #ced4da;
+	border-radius: 0.25rem;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-file-text {
+	display: block;
+	flex-grow: 1;
+	padding: 0.375rem 0.75rem;
+	overflow: hidden;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #495057;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	background-color: #fff;
+	border-color: inherit;
+	border-style: solid;
+	border-width: 1px;
+	border-top-left-radius: inherit;
+	border-bottom-left-radius: inherit;
+}
+
+.form-file-button {
+	display: block;
+	flex-shrink: 0;
+	padding: 0.375rem 0.75rem;
+	margin-left: -1px;
+	line-height: 1.5;
+	color: #495057;
+	background-color: #e9ecef;
+	border-color: inherit;
+	border-style: solid;
+	border-width: 1px;
+	border-top-right-radius: inherit;
+	border-bottom-right-radius: inherit;
+}
+
+/* UI: Slider */
 .slider {
 	position: relative;
 	display: flex;
-	width: 100%;
 }
 
 .slider input[type="range"] {
 	width: 100%;
-	height: calc(1.5em + .75rem + 2px);
+	height: calc(1.5em + 0.75rem + 2px);
 	background: transparent;
 	appearance: none;
 }
@@ -93,7 +218,7 @@ input[type="text"].form-control {
 	height: 2px;
 	background-color: #ced4da;
 	cursor: pointer;
-	transition: background-color .2s;
+	transition: background-color 0.2s;
 }
 
 .slider input[type="range"]:focus::-webkit-slider-runnable-track {
@@ -104,17 +229,17 @@ input[type="text"].form-control {
 	margin-top: -8px;
 	width: 18px;
 	height: 18px;
-	border: 2px solid #0069d9;
+	border: 2px solid #007bff;
 	border-radius: 50%;
 	background-color: #fff;
 	cursor: pointer;
-	transition: border-color .2s;
+	transition: border-color 0.2s;
 	-webkit-appearance: none;
 	-moz-appearance: none;
 }
 
 .slider input[type="range"]:focus::-webkit-slider-thumb {
-	border-color: #007bff;
+	border-color: #0069d9;
 }
 
 .slider input[type="range"]::-ms-track {
@@ -144,7 +269,7 @@ input[type="text"].form-control {
 	height: 2px;
 	background-color: #ced4da;
 	cursor: pointer;
-	transition: background-color .2s;
+	transition: background-color 0.2s;
 }
 
 .slider input[type="range"]:focus::-moz-range-track {
@@ -154,46 +279,27 @@ input[type="text"].form-control {
 .slider input[type="range"]::-moz-range-thumb {
 	width: 14px;
 	height: 14px;
-	border: 2px solid #0069d9;
+	border: 2px solid #007bff;
 	border-radius: 50%;
 	background-color: #fff;
 	cursor: pointer;
-	transition: border-color .2s;
+	transition: border-color 0.2s;
 }
 
 .slider input[type="range"]:focus::-moz-range-thumb {
-	border-color: #007bff;
+	border-color: #0069d9;
 }
 
-/* Modal */
-.dnd-code {
-	min-height: calc(210px + .75rem + 2px);
-	max-height: calc(630px + .75rem + 2px);
-	font-family: Menlo, Consolas, DejaVu Sans Mono, monospace;
-	font-size: 14px;
-	tab-size: 4;
-	-moz-tab-size: 4;
-}
-
-.modal-footer-mod {
-	display: flex;
-	justify-content: space-between;
-	padding: 0 1rem 1rem;
-	border-bottom-right-radius: calc(.3rem - 1px);
-	border-bottom-left-radius: calc(.3rem - 1px);
-}
-
-/* Step */
-.dnd-step-input {
+/* UI: Step input */
+.step {
 	max-width: 111px;
 }
 
-.dnd-step-input span {
+.step span {
 	width: 56px;
 	justify-content: center;
-	9as
 }
 
-.dnd-step-input input[type="text"] {
+.step input[type="text"] {
 	text-align: center;
 }
