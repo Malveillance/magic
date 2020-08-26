@@ -3,7 +3,7 @@ function htmlDecode(input) {
 	return doc.documentElement.textContent;
 }
 
-$('#dnd-base-input').on('change', function() {
+$('.control-dnd-base input').on('change', function() {
 	var blob = this.files[0];
 
 	if (blob && (blob.type == 'image/jpeg' || blob.type == 'image/png')) {
@@ -34,12 +34,12 @@ $('#dnd-base-input').on('change', function() {
 
 		var name = blob.name.split('.').slice(0, -1).join('.');
 		var next = Number(name) ? Number(name) + 1 : 1;
-		$('#dnd-solution').val(('00000' + next).slice(-6));
+		$('.control-dnd-solution input').val(('00000' + next).slice(-6));
 
 		$('.control-dnd-shape .title').attr('data-badge', 0);
 
-		$('.control.dnd-base-group.fade').addClass('show');
-		$('.control.dnd-shape-group.fade').removeClass('show');
+		$('.control.group-dnd-base.fade').addClass('show');
+		$('.control.group-dnd-shape.fade').removeClass('show');
 
 		URL.revokeObjectURL(blob);
 	}
@@ -47,11 +47,11 @@ $('#dnd-base-input').on('change', function() {
 	$(this).val('');
 });
 
-$('#dnd-add-button').on('click', function() {
-	$('#dnd-shape-input').click();
+$('.control-dnd-shape button').on('click', function() {
+	$('.control-dnd-shape input').click();
 });
 
-$('#dnd-shape-input').on('change', function() {
+$('.control-dnd-shape input').on('change', function() {
 	var count = $(this.files).length;
 
 	$(this.files).each(function(i) {
@@ -78,7 +78,7 @@ $('#dnd-shape-input').on('change', function() {
 						top: y,
 						width: w,
 						height: h,
-						opacity: $('#dnd-opacity-input').val(),
+						opacity: $('.control-dnd-opacity input').val(),
 						backgroundImage: 'url(' + URL.createObjectURL(blob) + ')'
 					},
 					draggable: {
@@ -104,7 +104,7 @@ $('#dnd-shape-input').on('change', function() {
 			var data = Number($('.control-dnd-shape .title').attr('data-badge'));
 			$('.control-dnd-shape .title').attr('data-badge', ++data);
 
-			$('.control.dnd-shape-group.fade').addClass('show');
+			$('.control.group-dnd-shape.fade').addClass('show');
 
 			URL.revokeObjectURL(blob);
 		}
@@ -113,7 +113,7 @@ $('#dnd-shape-input').on('change', function() {
 	$(this).val('');
 });
 
-$('#dnd-opacity-input').on('input', function() {
+$('.control-dnd-opacity input').on('input', function() {
 	$('#dnd-canvas .shape').css('opacity', $(this).val());
 	$('.control-dnd-opacity .title').attr('data-badge', $(this).val()*100 + '%');
 });
@@ -158,7 +158,7 @@ $(document).on('keydown', function(e) {
 
 			var length = $('#dnd-canvas .shape').length;
 			$('.control-dnd-shape .title').attr('data-badge', length);
-			if (!length) $('.control.dnd-shape-group.fade').removeClass('show');
+			if (!length) $('.control.group-dnd-shape.fade').removeClass('show');
 		break;
 	}
 });
@@ -180,8 +180,13 @@ $(document).on('keydown', function(e) {
 	};
 }($));
 
-$('#dnd-modal, #dnd-step').on('show.bs.modal change', function() {
-	var next = $('#dnd-solution').val();
+$('.code-copy').on('click', function() {
+	$(this).parents('.modal-content').find('textarea.code').select();
+	document.execCommand('copy');
+});
+
+$('#dnd-modal, .control-dnd-step input').on('show.bs.modal change', function() {
+	var next = $('.control-dnd-solution input').val();
 	var code = '<solution>\n\t<step>\n\t\t<figure align="center">\n\t\t\t<object excel="' + next + '" border="0"/>\n\t\t</figure>\n\t</step>\n</solution>\n\n';
 
 	var file = $('#dnd-canvas .base').data('file') || '';
@@ -198,7 +203,7 @@ $('#dnd-modal, #dnd-step').on('show.bs.modal change', function() {
 		var x = $(this).position().left;
 		var y = $(this).position().top;
 
-		var rx = Number($('#dnd-step').val()) || 50;
+		var rx = Number($('.control-dnd-step input').val()) || 50;
 		var ry = ch - h;
 
 		code += '\t<shape file="' + $(this).data('file') + '" width="' + w + '" height="' + h + '" coords="' + rx*i + ', ' + ry + '">\n';
@@ -211,76 +216,33 @@ $('#dnd-modal, #dnd-step').on('show.bs.modal change', function() {
 	$('#dnd-modal .code').val(code);
 });
 
-$('#dnd-code-copy').on('click', function() {
-	$('#dnd-modal .code').select();
-	document.execCommand('copy');
-});
+$('#ddl-modal').on('show.bs.modal', function() {
+	var separator = ',';
 
-$('#lb-base').on('change', function() {
-	var blob = this.files[0];
+	var text = $('#ddl-text').val();
+	var code = '<dropdownlist>\n\t<sentence>';
 
-	if (blob && (blob.type == 'image/jpeg' || blob.type == 'image/png')) {
-		$('#lb .canvas').empty();
+	var number = 1, words = [];
+	text.split(/\r?\n/).forEach(string => {
+		if (string === '') return;
 
-		var base = $('<div/>', {
-			'class': 'base fade',
-			'data-file': blob.name
-		}).appendTo('#lb .canvas');
+		var p = string.replace(/\[(.*?)\]/g, function(match, items) {
+			var word = '\n\n\t<word number="' + number + '">';
 
-		var image = new Image();
-		$(image).one('load', function() {
-			$(base).css({
-				'width': Math.floor(this.naturalWidth/2),
-				'height': Math.floor(this.naturalHeight/2),
-				'background-image': 'url(' + URL.createObjectURL(blob) + ')'
+			items.split(separator).forEach(item => {
+				word += '\n\t\t<variant valid="false"><varianttext>' + item.trim() + '</varianttext></variant>';
 			});
+
+			word += '\n\t</word>';
+			words.push(word);
+
+			return '<field number="' + (number++) + '"/>';
 		});
 
-		image.src = URL.createObjectURL(blob);
-
-		$('#lb-base-name').html(blob.name);
-
-		$(base).addClass('show');
-		$('.group-label.fade').addClass('show');
-
-		URL.revokeObjectURL(blob);
-	}
-
-	$(this).val('');
-});
-
-$('#lb-add-label').on('click', function() {
-	var label = $('<div/>', {
-		'class': 'label fade',
-		'html': $('#lb-text').val() || 'Simple',
-		'css': {
-			'left': 0,
-			'top': 0
-		},
-		'title': htmlDecode('&larr;&uarr;&rarr;&darr;: &plusmn;1 px\nDelete: Удалить')
-	}).appendTo('#lb .canvas');
-
-	$(label).attr('data-pos', 'X: 10px, Y: 100px');
-
-	$(label).draggable({
-		containment: '#lb .canvas',
-		cursor: 'grabbing'
+		code += '\n\t\t<p>' + p + '</p>';
 	});
 
-	$(label).on('dragstart', function() {
-		$('#lb .canvas').css('opacity', 0.5);
-	});
+	code += '\n\t</sentence>' + words.join('') + '\n</dropdownlist>';
 
-	$(label).on('dragstop', function() {
-		$('#lb .canvas').css('opacity', 1);
-	});
-
-	$(label).on('mousedown', function() {
-		if ($(this).hasClass('selected')) return;
-
-		$('#lb .label').removeClass('selected');
-		$(this).addClass('selected');
-	});
-
-	$(label).addClass('show');
+	$('#ddl-modal .code').val(code);
 });

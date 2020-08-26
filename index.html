@@ -3,61 +3,75 @@
 <head>
 	<meta charset="utf-8">
 	<title>Magic</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/magic.css">
 </head>
 <body class="pt-3">
 	<div class="container-fixed">
-		<nav>
-			<div class="nav nav-tabs" role="tablist">
-				<a class="nav-item nav-link active" data-toggle="tab" href="#nav-dnd" role="tab" aria-selected="true">&lt;dnd&gt;</a>
-				<a class="nav-item nav-link" data-toggle="tab" href="#nav-label" role="tab" aria-selected="false">&lt;label&gt;<sup> &beta;</sup></a>
-				<a class="nav-item nav-link" data-toggle="tab" href="#nav-ddl" role="tab" aria-selected="false">&lt;dropdownlist&gt;</a>
-			</div>
-		</nav>
+		<ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link" data-toggle="tab" href="#nav-dnd" role="tab" aria-selected="false">&lt;dnd&gt;</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link active" data-toggle="tab" href="#nav-ddl" role="tab" aria-selected="true">&lt;dropdownlist&gt;</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" data-toggle="tab" href="#nav-ml" role="tab" aria-selected="false">&lt;matchinglegend&gt;</a>
+			</li>
+		</ul>
 
 		<div class="tab-content">
-			<div class="tab-pane fade show active" id="nav-dnd" role="tabpanel">
+			<div class="tab-pane fade" id="nav-dnd" role="tabpanel">
+
+				<!-- Info -->
+				<div class="row no-gutters mt-3">
+					<div class="col-12">
+						<div class="alert alert-primary mb-0" role="alert">Верстает, располагает плашки слева-снизу в ряд с заданным шагом, перемешивает их и выравнивает по высоте.</div>
+					</div>
+				</div>
 
 				<!-- Controls -->
-				<div class="row mt-3 align-items-end">
-					<div class="col-3 control control-dnd-base">
+				<div class="row no-gutters mt-3">
+					<div class="col-3 pr-2 control control-dnd-base">
 						<div class="title">Основа</div>
 						<div class="form-file">
-							<input type="file" class="form-file-input" id="dnd-base-input" accept="image/pjpeg, image/png" title>
-							<label class="form-file-label" for="dnd-base-input">
+							<input type="file" class="form-file-input" accept="image/pjpeg, image/png" title>
+							<label class="form-file-label">
 								<span class="form-file-text">Выберите файл</span>
 								<span class="form-file-button">Обзор</span>
 							</label>
 						</div>
 					</div>
 
-					<div class="col-2 control dnd-base-group fade">
+					<div class="col-2 px-2 control control-dnd-solution group-dnd-base fade">
 						<div class="title">Решение</div>
-						<input type="text" id="dnd-solution" class="form-control">
+						<input type="text" class="form-control">
 					</div>
 
-					<div class="col-auto offset-1 control control-dnd-shape dnd-base-group fade">
-						<div class="title" data-badge="0">Плашки</div>
-						<button type="button" class="btn btn-primary" id="dnd-add-button">Добавить</button>
-						<input type="file" class="d-none" id="dnd-shape-input" accept="image/pjpeg, image/png" multiple title>
-					</div>
-
-					<div class="col-2 control control-dnd-opacity dnd-shape-group fade">
-						<div class="title" data-badge="100%">Прозрачность</div>
-						<div class="slider">
-							<input type="range" id="dnd-opacity-input" min="0.4" max="1" step="0.1" value="1" title>
+					<div class="col-2 px-2 d-flex justify-content-end control control-dnd-shape group-dnd-base fade">
+						<div>
+							<div class="title" data-badge="0">Плашки</div>
+							<button type="button" class="btn btn-primary">Добавить</button>
+							<input type="file" class="d-none" accept="image/pjpeg, image/png" multiple title>
 						</div>
 					</div>
 
-					<div class="col control d-flex justify-content-end dnd-shape-group fade">
-						<button type="button" class="btn btn-success" data-toggle="modal" data-target="#dnd-modal">Сверстать</button>
+					<div class="col-2 px-2 control control-dnd-opacity group-dnd-shape fade">
+						<div class="title" data-badge="100%">Прозрачность</div>
+						<div class="slider">
+							<input type="range" min="0.4" max="1" step="0.1" value="1" title>
+						</div>
+					</div>
+
+					<div class="col-3 pl-2 d-flex justify-content-end control group-dnd-shape fade">
+						<div class="no-title">
+							<button type="button" class="btn btn-success" data-toggle="modal" data-target="#dnd-modal">Сверстать</button>
+						</div>
 					</div>
 				</div>
 
 				<!-- Canvas -->
-				<div class="row mt-5">
+				<div class="row no-gutters mt-5">
 					<div class="col-12 d-flex justify-content-center">
 						<div class="canvas" id="dnd-canvas"></div>
 					</div>
@@ -67,21 +81,23 @@
 				<div class="modal fade" id="dnd-modal" tabindex="-1" role="dialog" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 						<div class="modal-content">
-							<div class="modal-body control">
-								<div class="title">Код</div>
-								<textarea class="code form-control" rows="20"></textarea>
+							<div class="modal-body">
+								<div class="control">
+									<div class="title">Код</div>
+									<textarea class="form-control code" rows="20"></textarea>
+								</div>
 							</div>
-							<div class="modal-footer-mod">
-								<div class="step">
+							<div class="modal-footer">
+								<div class="control control-dnd-step">
 									<div class="input-group">
 										<div class="input-group-prepend">
 											<span class="input-group-text">Шаг</span>
 										</div>
-										<input type="text" class="form-control" id="dnd-step" value="50">
+										<input type="text" class="form-control" value="50">
 									</div>
 								</div>
-								<div class="d-flex">
-									<button type="button" class="btn btn-primary" id="dnd-code-copy">Копировать</button>
+								<div class="control d-flex">
+									<button type="button" class="btn btn-primary code-copy">Копировать</button>
 									<button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Закрыть</button>
 								</div>
 							</div>
@@ -91,48 +107,54 @@
 
 			</div>
 
-			<div class="tab-pane fade" id="nav-label" role="tabpanel">
+			<div class="tab-pane fade show active" id="nav-ddl" role="tabpanel">
+
+				<!-- Info -->
+				<div class="row no-gutters mt-3">
+					<div class="col-12">
+						<div class="alert alert-primary mb-0" role="alert">Верстает dnd, располагает плашки слева-снизу в ряд с заданным шагом, перемешивает и выравнивает по высоте.</div>
+					</div>
+				</div>
 
 				<!-- Controls -->
-				<div class="row">
-					<div class="col-3 mt-3">
-						<span class="title">Основа</span>
-						<div class="custom-file">
-							<input type="file" class="custom-file-input" id="lb-base" accept="image/pjpeg,image/png" title>
-							<label class="custom-file-label" for="lb-base" id="lb-base-name">Выберите файл</label>
-						</div>
+				<div class="row no-gutters mt-3">
+					<div class="col-10 pr-2 control">
+						<div class="title">Текст</div>
+						<textarea class="form-control" id="ddl-text" rows="15">Виктор интересуется [теннис, теннисом, теннису].
+Я хочу работать [юристом, юристу, юристе] в хорошей компании.
+[Я, мы, они] любим нашу планету.</textarea>
 					</div>
 
-					<div class="col-3 mt-3">
-						<div class="group-label">
-							<span class="title">Текст</span>
-							<input type="text" id="lb-text" class="form-control">
-						</div>
-					</div>
-
-					<div class="col-auto mt-3 d-flex align-items-end">
-						<div class="group-label">
-							<button type="button" class="btn btn-primary" id="lb-add-label">Добавить</button>
-						</div>
-					</div>
-
-					<div class="col mt-3 d-flex align-items-end justify-content-end">
-						<div class="group-label fade">
-							<button type="button" class="btn btn-success" data-toggle="modal" data-target="#lb-modal">Сверстать</button>
+					<div class="col-2 pl-2 d-flex justify-content-end control">
+						<div class="no-title">
+							<button type="button" class="btn btn-success" data-toggle="modal" data-target="#ddl-modal">Сверстать</button>
 						</div>
 					</div>
 				</div>
 
-				<!-- Canvas -->
-				<div class="row">
-					<div class="col-12 mt-5 mb-5 d-flex justify-content-center">
-						<div class="canvas"></div>
+				<!-- Modal -->
+				<div class="modal fade" id="ddl-modal" tabindex="-1" role="dialog" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-body">
+								<div class="control">
+									<div class="title">Код</div>
+									<textarea class="form-control code" rows="20"></textarea>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<div class="control d-flex">
+									<button type="button" class="btn btn-primary code-copy">Копировать</button>
+									<button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Закрыть</button>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 
 			</div>
 
-			<div class="tab-pane fade" id="nav-ddl" role="tabpanel">
+			<div class="tab-pane fade" id="nav-ml" role="tabpanel">
 				<div class="mt-5 d-flex justify-content-center">
 					<img src="img/peperage.png" alt="false">
 				</div>
@@ -140,10 +162,10 @@
 		</div>
 	</div>
 
-	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+	<script src="js/jquery-3.5.1.min.js"></script>
+	<script src="js/jquery-ui.min.js"></script>
+	<script src="js/popper.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
 	<script src="js/magic.js"></script>
 </body>
 </html>
