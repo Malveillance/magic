@@ -1,9 +1,9 @@
-function htmlDecode(input) {
-	var doc = new DOMParser().parseFromString(input, "text/html");
+function htmlDecode(string) {
+	var doc = new DOMParser().parseFromString(string, "text/html");
 	return doc.documentElement.textContent;
 }
 
-$('.control-dnd-base input').on('change', function() {
+$('.control-dnd-base input[type="file"]').on('change', function() {
 	var blob = this.files[0];
 
 	if (blob && (blob.type == 'image/jpeg' || blob.type == 'image/png')) {
@@ -38,8 +38,8 @@ $('.control-dnd-base input').on('change', function() {
 
 		$('.control-dnd-shape .title').attr('data-badge', 0);
 
-		$('.control.group-dnd-base.fade').addClass('show');
-		$('.control.group-dnd-shape.fade').removeClass('show');
+		$('.view-dnd-base').removeClass('invisible').addClass('show');
+		$('.view-dnd-shape.show').one('transitionend', e => { $(e.target).addClass('invisible') }).removeClass('show');
 
 		URL.revokeObjectURL(blob);
 	}
@@ -48,10 +48,10 @@ $('.control-dnd-base input').on('change', function() {
 });
 
 $('.control-dnd-shape button').on('click', function() {
-	$('.control-dnd-shape input').click();
+	$('.control-dnd-shape input[type="file"]').click();
 });
 
-$('.control-dnd-shape input').on('change', function() {
+$('.control-dnd-shape input[type="file"]').on('change', function() {
 	var count = $(this.files).length;
 
 	$(this.files).each(function(i) {
@@ -104,7 +104,7 @@ $('.control-dnd-shape input').on('change', function() {
 			var data = Number($('.control-dnd-shape .title').attr('data-badge'));
 			$('.control-dnd-shape .title').attr('data-badge', ++data);
 
-			$('.control.group-dnd-shape.fade').addClass('show');
+			$('.view-dnd-shape').removeClass('invisible').addClass('show');
 
 			URL.revokeObjectURL(blob);
 		}
@@ -158,7 +158,7 @@ $(document).on('keydown', function(e) {
 
 			var length = $('#dnd-canvas .shape').length;
 			$('.control-dnd-shape .title').attr('data-badge', length);
-			if (!length) $('.control.group-dnd-shape.fade').removeClass('show');
+			if (!length) $('.view-dnd-shape.show').one('transitionend', e => { $(e.target).addClass('invisible') }).removeClass('show');
 		break;
 	}
 });
@@ -185,7 +185,7 @@ $('.code-copy').on('click', function() {
 	document.execCommand('copy');
 });
 
-$('#dnd-modal, .control-dnd-step input').on('show.bs.modal change', function() {
+$('#dnd-modal').on('show.bs.modal', function() {
 	var next = $('.control-dnd-solution input').val();
 	var code = '<solution>\n\t<step>\n\t\t<figure align="center">\n\t\t\t<object excel="' + next + '" border="0"/>\n\t\t</figure>\n\t</step>\n</solution>\n\n';
 
