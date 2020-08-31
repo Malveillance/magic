@@ -9,19 +9,19 @@
 <body class="pt-3">
 	<div class="container-fixed">
 		<nav class="nav nav-tabs">
-			<a class="nav-link" data-toggle="tab" href="#nav-dnd" role="tab" aria-selected="false">&lt;dnd&gt;</a>
-			<a class="nav-link active" data-toggle="tab" href="#nav-ddl" role="tab" aria-selected="true">&lt;dropdownlist&gt;<sup> &beta;</sup></a>
+			<a class="nav-link active" data-toggle="tab" href="#nav-dnd" role="tab" aria-selected="true">&lt;dnd&gt;</a>
+			<a class="nav-link" data-toggle="tab" href="#nav-ddl" role="tab" aria-selected="false">&lt;dropdownlist&gt;<sup> &beta;</sup></a>
 			<a class="nav-link" data-toggle="tab" href="#nav-ml" role="tab" aria-selected="false">&lt;matchinglegend&gt;</a>
 		</nav>
 
 		<div class="tab-content">
-			<div class="tab-pane fade" id="nav-dnd" role="tabpanel">
+			<div class="tab-pane fade show active" id="nav-dnd" role="tabpanel">
 
 				<!-- Info -->
 				<div class="row no-gutters mt-3">
 					<div class="col-12">
 						<div class="alert alert-primary mb-0" role="alert">
-							<p class="mb-0">&bull; Принимает оригинальный масштаб картинок, уменьшает их в 2 раза.</p>
+							<p class="mb-0">&bull; Принимает изображения в оригинальном масштабе, уменьшает их в 2 раза.</p>
 							<p class="mb-0">&bull; Плашки перемешивает, выравнивает по высоте и располагает в ряд с заданным шагом.</p>
 						</div>
 					</div>
@@ -29,7 +29,7 @@
 
 				<!-- Controls -->
 				<div class="row no-gutters mt-3">
-					<div class="col-3 pr-2">
+					<div class="col-3">
 						<div class="control-dnd-base">
 							<div class="title">Основа</div>
 							<div class="form-file">
@@ -42,14 +42,14 @@
 						</div>
 					</div>
 
-					<div class="col-2 px-2">
+					<div class="col-2 ml-3">
 						<div class="control-dnd-solution view-dnd-base fade invisible">
 							<div class="title">Решение</div>
 							<input type="text" class="form-control">
 						</div>
 					</div>
 
-					<div class="col-2 px-2 d-flex justify-content-end">
+					<div class="col-auto ml-5">
 						<div class="control-dnd-shape view-dnd-base fade invisible">
 							<div class="title" data-badge="0">Плашки</div>
 							<button type="button" class="btn btn-primary">Добавить</button>
@@ -57,14 +57,14 @@
 						</div>
 					</div>
 
-					<div class="col-1 px-2">
+					<div class="col-1 ml-3">
 						<div class="control-dnd-step view-dnd-shape fade invisible">
 							<div class="title">Шаг</div>
 							<input type="text" class="form-control" value="50">
 						</div>
 					</div>
 
-					<div class="col-2 px-2">
+					<div class="col-2 ml-3">
 						<div class="control-dnd-opacity view-dnd-shape fade invisible">
 							<div class="title" data-badge="100%">Прозрачность</div>
 							<div class="slider">
@@ -73,7 +73,7 @@
 						</div>
 					</div>
 
-					<div class="col-2 pl-2 d-flex justify-content-end align-items-end">
+					<div class="col d-flex justify-content-end align-items-end">
 						<div class="view-dnd-shape fade invisible">
 							<button type="button" class="btn btn-success" data-toggle="modal" data-target="#dnd-modal">Сверстать</button>
 						</div>
@@ -92,16 +92,12 @@
 					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 						<div class="modal-content">
 							<div class="modal-body">
-								<div class="control">
-									<div class="title">Код</div>
-									<textarea class="form-control code" rows="20"></textarea>
-								</div>
+								<div class="title">Код</div>
+								<textarea class="form-control code" rows="20"></textarea>
 							</div>
 							<div class="modal-footer">
-								<div class="control d-flex">
-									<button type="button" class="btn btn-primary code-copy">Копировать</button>
-									<button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Закрыть</button>
-								</div>
+								<button type="button" class="btn btn-primary code-copy">Копировать</button>
+								<button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Закрыть</button>
 							</div>
 						</div>
 					</div>
@@ -109,38 +105,70 @@
 
 			</div>
 
-			<div class="tab-pane fade show active" id="nav-ddl" role="tabpanel">
+			<div class="tab-pane fade" id="nav-ddl" role="tabpanel">
 
 				<!-- Info -->
 				<div class="row no-gutters mt-3">
 					<div class="col-12">
 						<div class="alert alert-primary mb-0" role="alert">
-							<p class="mb-0">&bull; Принимает оригинальный масштаб картинок, уменьшает их в 2 раза.</p>
-							<p class="mb-0">&bull; Плашки перемешивает, выравнивает по высоте и располагает в ряд с заданным шагом.</p>
+							<p class="mb-0">&bull; Правильный вариант не выделяет, нужно отмечать вручную.</p>
 						</div>
 					</div>
 				</div>
 
 				<!-- Controls -->
 				<div class="row no-gutters mt-3">
-					<div class="col-2 pr-2 control">
-						<select class="form-select">
-							<option value="1" selected>;</option>
-							<option value="2">,</option>
-						</select>
+					<div class="col-1">
+						<div class="control-ddl-brackets">
+							<div class="title">Скобки</div>
+							<select class="form-select w-1">
+								<option value="0" selected>[ &hellip; ]</option>
+								<option value="1">( &hellip; )</option>
+							</select>
+						</div>
 					</div>
 
-					<div class="col-10 pl-2 d-flex justify-content-end control">
+					<div class="col-auto ml-3">
+						<div class="control-ddl-separator">
+							<div class="title">Разделитель</div>
+							<select class="form-select w-1">
+								<option value="0" selected>,</option>
+								<option value="1">;</option>
+								<option value="2">/</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="col-auto ml-5 d-flex justify-content-end flex-column">
+						<div class="form-check form-switch">
+							<input class="form-check-input" type="checkbox" id="ddl-quote" checked>
+							<label class="form-check-label" for="ddl-quote">Выделить курсивом</label>
+						</div>
+						<div class="form-check form-switch mb-0">
+							<input class="form-check-input" type="checkbox" id="ddl-mix" checked>
+							<label class="form-check-label" for="ddl-mix">Перемешать</label>
+						</div>
+					</div>
+
+					<div class="col-auto ml-3 d-flex justify-content-end flex-column">
+						<div class="form-check form-switch">
+							<input class="form-check-input" type="checkbox" id="ddl-align">
+							<label class="form-check-label" for="ddl-align">Выровнять текст по краю</label>
+						</div>
+						<div class="form-check form-switch mb-0"></div>
+					</div>
+
+					<div class="col d-flex justify-content-end align-items-end">
 						<button type="button" class="btn btn-success" data-toggle="modal" data-target="#ddl-modal">Сверстать</button>
 					</div>
 				</div>
 
 				<!-- Text -->
 				<div class="row no-gutters mt-3">
-					<div class="col-12 control">
+					<div class="col-12">
 						<div class="title">Текст</div>
-						<textarea class="form-control" id="ddl-text" rows="15">Виктор интересуется [теннис, теннисом, теннису].
-Я хочу работать [юристом, юристу, юристе] в хорошей компании.
+						<textarea class="form-control" id="ddl-text" rows="15">Пример:
+На столе много [книг, книга, книги].
 [Я, мы, они] любим нашу планету.</textarea>
 					</div>
 				</div>
@@ -150,16 +178,12 @@
 					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 						<div class="modal-content">
 							<div class="modal-body">
-								<div class="control">
-									<div class="title">Код</div>
-									<textarea class="form-control code" rows="20"></textarea>
-								</div>
+								<div class="title">Код</div>
+								<textarea class="form-control code" rows="20"></textarea>
 							</div>
 							<div class="modal-footer">
-								<div class="control d-flex">
-									<button type="button" class="btn btn-primary code-copy">Копировать</button>
-									<button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Закрыть</button>
-								</div>
+								<button type="button" class="btn btn-primary code-copy">Копировать</button>
+								<button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Закрыть</button>
 							</div>
 						</div>
 					</div>

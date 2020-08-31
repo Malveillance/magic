@@ -1,5 +1,5 @@
-function htmlDecode(string) {
-	var doc = new DOMParser().parseFromString(string, "text/html");
+function htmlDecode(s) {
+	var doc = new DOMParser().parseFromString(s, "text/html");
 	return doc.documentElement.textContent;
 }
 
@@ -39,7 +39,9 @@ $('.control-dnd-base input[type="file"]').on('change', function() {
 		$('.control-dnd-shape .title').attr('data-badge', 0);
 
 		$('.view-dnd-base').removeClass('invisible').addClass('show');
-		$('.view-dnd-shape.show').one('transitionend', e => { $(e.target).addClass('invisible') }).removeClass('show');
+		$('.view-dnd-shape.show').one('transitionend', function() {
+			$(this).addClass('invisible');
+		}).removeClass('show');
 
 		URL.revokeObjectURL(blob);
 	}
@@ -118,13 +120,13 @@ $('.control-dnd-opacity input').on('input', function() {
 	$('.control-dnd-opacity .title').attr('data-badge', $(this).val()*100 + '%');
 });
 
-$(window).on('mousedown', function(e) {
+$(window).on('mousedown', e => {
 	if ($(e.target).hasClass('selected')) return;
 
 	$('.canvas .ui-draggable').removeClass('selected');
 });
 
-$(document).on('keydown', function(e) {
+$(document).on('keydown', e => {
 	var object = $('.canvas .selected');
 	if (!object.length) return;
 
@@ -158,7 +160,9 @@ $(document).on('keydown', function(e) {
 
 			var length = $('#dnd-canvas .shape').length;
 			$('.control-dnd-shape .title').attr('data-badge', length);
-			if (!length) $('.view-dnd-shape.show').one('transitionend', e => { $(e.target).addClass('invisible') }).removeClass('show');
+			if (!length) $('.view-dnd-shape.show').one('transitionend', function() {
+				$(this).addClass('invisible');
+			}).removeClass('show');
 		break;
 	}
 });
@@ -217,20 +221,32 @@ $('#dnd-modal').on('show.bs.modal', function() {
 });
 
 $('#ddl-modal').on('show.bs.modal', function() {
-	var separator = ',';
+	var separator = $('.control-ddl-separator select option:selected').text();
+	var brackets = new Array(/\[(.*?)\]/g, /\((.*?)\)/g)[$('.control-ddl-brackets select').val()];
+
+	var quote = $('#ddl-quote').prop('checked');
+	var mix = $('#ddl-mix').prop('checked') ? '' : ' mix="false"';
+	var align = $('#ddl-align').prop('checked') ? ' align="left"' : '';
 
 	var text = $('#ddl-text').val();
-	var code = '<dropdownlist>\n\t<sentence>';
+	var code = '<dropdownlist' + mix + '>\n\t<sentence>';
 
 	var number = 1, words = [];
-	text.split(/\r?\n/).forEach(string => {
-		if (string === '') return;
+	text.split(/\r?\n/).forEach(line => {
+		if (line === '') return;
 
-		var p = string.replace(/\[(.*?)\]/g, function(match, items) {
+		var p = line.replace(brackets, (m, items) => {
 			var word = '\n\n\t<word number="' + number + '">';
 
-			items.split(separator).forEach(item => {
-				word += '\n\t\t<variant valid="false"><varianttext>' + item.trim() + '</varianttext></variant>';
+			var capitalize = false;
+			items.split(separator).forEach((item, i) => {
+				var cur = item.trim();
+
+				if (i == 0 && cur[0] === cur[0].toUpperCase()) capitalize = true;
+				if (i > 0 && capitalize) cur = cur[0].toUpperCase() + cur.slice(1);
+
+				if (quote) cur = '<style type="quote">' + cur + '</style>';
+				word += '\n\t\t<variant valid="false"><varianttext>' + cur + '</varianttext></variant>';
 			});
 
 			word += '\n\t</word>';
@@ -239,7 +255,8 @@ $('#ddl-modal').on('show.bs.modal', function() {
 			return '<field number="' + (number++) + '"/>';
 		});
 
-		code += '\n\t\t<p>' + p + '</p>';
+		if (quote) p = '<style type="quote">' + p + '</style>';
+		code += '\n\t\t<p' + align + '>' + p + '</p>';
 	});
 
 	code += '\n\t</sentence>' + words.join('') + '\n</dropdownlist>';
