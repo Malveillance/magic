@@ -318,11 +318,38 @@ textarea.form-control {
 	max-height: calc(527px + 0.75rem);
 	font-family: Consolas, Menlo, DejaVu Sans Mono, monospace;
 	font-size: 0.875rem;
-	tab-size: 4;
 	-moz-tab-size: 4;
+	tab-size: 4;
 }
 
-.w-1 {
+button.text-clear {
+	position: absolute;
+	right: 0.5rem;
+	top: 0.5rem;
+	z-index: 10;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.75rem;
+	color: #6c757d;
+	background-color: transparent;
+	border: 0;
+	border-radius: 0.25rem;
+}
+
+button.text-clear:focus {
+	outline: 0;
+}
+
+button.text-clear:hover {
+	color: #fff;
+	background-color: #007bff;
+}
+
+button.text-clear:active {
+	color: #fff;
+	background-color: #0069d9;
+}
+
+.fixed-1 {
 	width: calc(var(--container-width)/12);
 }
 
@@ -367,6 +394,10 @@ textarea.form-control {
 
 .canvas .ui-draggable:not(.ui-draggable-dragging) {
 	cursor: grab;
+}
+
+.canvas .ui-draggable:active {
+	cursor: grabbing;
 }
 
 .canvas .ui-draggable.selected {

@@ -1,8 +1,3 @@
-function htmlDecode(s) {
-	var doc = new DOMParser().parseFromString(s, "text/html");
-	return doc.documentElement.textContent;
-}
-
 $('.control-dnd-base input[type="file"]').on('change', function() {
 	var blob = this.files[0];
 
@@ -53,6 +48,11 @@ $('.control-dnd-shape button').on('click', function() {
 	$('.control-dnd-shape input[type="file"]').click();
 });
 
+function htmlDecode(string) {
+	var doc = new DOMParser().parseFromString(string, 'text/html');
+	return doc.documentElement.textContent;
+}
+
 $('.control-dnd-shape input[type="file"]').on('change', function() {
 	var count = $(this.files).length;
 
@@ -90,11 +90,11 @@ $('.control-dnd-shape input[type="file"]').on('change', function() {
 						snapTolerance: 10
 					},
 					on: {
-						mousedown: function() {
-							if ($(this).hasClass('selected')) return;
+						mousedown: e => {
+							if ($(e.target).hasClass('selected')) return;
 
 							$('#dnd-canvas .shape').removeClass('selected');
-							$(this).addClass('selected');
+							$(e.target).addClass('selected');
 						}
 					},
 					appendTo: '#dnd-canvas'
@@ -184,8 +184,12 @@ $(document).on('keydown', e => {
 	};
 }($));
 
-$('.code-copy').on('click', function() {
-	$(this).parents('.modal-content').find('textarea.code').select();
+$('.text-clear').on('click', e => {
+	$(e.target.dataset.target).val('');
+});
+
+$('.code-copy').on('click', e => {
+	$(e.target.dataset.target).select();
 	document.execCommand('copy');
 });
 
@@ -221,8 +225,8 @@ $('#dnd-modal').on('show.bs.modal', function() {
 });
 
 $('#ddl-modal').on('show.bs.modal', function() {
-	var separator = $('.control-ddl-separator select option:selected').text();
 	var brackets = new Array(/\[(.*?)\]/g, /\((.*?)\)/g)[$('.control-ddl-brackets select').val()];
+	var separator = $('.control-ddl-separator select').val();
 
 	var quote = $('#ddl-quote').prop('checked');
 	var mix = $('#ddl-mix').prop('checked') ? '' : ' mix="false"';
@@ -235,15 +239,16 @@ $('#ddl-modal').on('show.bs.modal', function() {
 	text.split(/\r?\n/).forEach(line => {
 		if (line === '') return;
 
-		var p = line.replace(brackets, (m, items) => {
+		var p = line.trim().replace(brackets, (m, items) => {
 			var word = '\n\n\t<word number="' + number + '">';
 
 			var capitalize = false;
-			items.split(separator).forEach((item, i) => {
+			items.trim().split(separator).forEach((item, i) => {
 				var cur = item.trim();
+				if (cur === '') return;
 
-				if (i == 0 && cur[0] === cur[0].toUpperCase()) capitalize = true;
-				if (i > 0 && capitalize) cur = cur[0].toUpperCase() + cur.slice(1);
+				if (i == 0 && cur[0] && cur[0] === cur[0].toUpperCase()) capitalize = true;
+				if (i > 0 && cur[0] && capitalize) cur = cur[0].toUpperCase() + cur.slice(1);
 
 				if (quote) cur = '<style type="quote">' + cur + '</style>';
 				word += '\n\t\t<variant valid="false"><varianttext>' + cur + '</varianttext></variant>';
