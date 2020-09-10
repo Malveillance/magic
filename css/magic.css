@@ -353,6 +353,14 @@ button.text-clear:active {
 	width: calc(var(--container-width)/12);
 }
 
+.mc-1 {
+	margin-top: 1.1875rem;
+}
+
+.mc-2 {
+	margin-top: 2.4375rem;
+}
+
 .modal-footer {
 	padding: 0 1rem 1rem;
 	border: none;
@@ -402,4 +410,22 @@ button.text-clear:active {
 
 .canvas .ui-draggable.selected {
 	z-index: 1;
+}
+
+.editor {
+	font-size: 1.25rem;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+span.vowel {
+	cursor: pointer;
+}
+
+span.vowel:hover {
+	color: #007bff;
+}
+
+span.vowel.accent {
+	color: #dc3545;
 }

@@ -11,11 +11,11 @@
 		<nav class="nav nav-tabs">
 			<a class="nav-link active" data-toggle="tab" href="#nav-ddl" role="tab" aria-selected="true">&lt;dropdownlist&gt;</a>
 			<a class="nav-link" data-toggle="tab" href="#nav-dnd" role="tab" aria-selected="false">&lt;dnd&gt;</a>
-			<a class="nav-link" data-toggle="tab" href="#nav-ml" role="tab" aria-selected="false">&lt;matchinglegend&gt;</a>
+			<a class="nav-link" data-toggle="tab" href="#nav-acc" role="tab" aria-selected="false">Ударе&#769;ния <sup>&beta;</sup></a>
 		</nav>
 
 		<div class="tab-content">
-			<div class="tab-pane fade show active" id="nav-ddl" role="tabpanel">
+			<div class="tab-pane fade active show" id="nav-ddl" role="tabpanel">
 
 				<div class="row no-gutters mt-3">
 					<div class="col-12">
@@ -41,10 +41,10 @@
 						<div class="control-ddl-separator">
 							<div class="title">Разделитель</div>
 							<select class="form-select fixed-1">
-								<option value="," selected>,</option>
-								<option value=";">;</option>
-								<option value="/">/</option>
-								<option value=" ">&nbsp;</option>
+								<option value="0" selected>,</option>
+								<option value="1">;</option>
+								<option value="2">/</option>
+								<option value="3">&nbsp;</option>
 							</select>
 						</div>
 					</div>
@@ -74,7 +74,7 @@
 				</div>
 
 				<!-- Text -->
-				<div class="row no-gutters mt-3">
+				<div class="row no-gutters mc-1">
 					<div class="col-12">
 						<div class="title">Текст</div>
 						<div class="position-relative float-right">
@@ -191,15 +191,55 @@
 				</div>
 
 			</div>
-			<div class="tab-pane fade" id="nav-ml" role="tabpanel">
+			<div class="tab-pane fade" id="nav-acc" role="tabpanel">
 
-				<div class="mt-5 d-flex justify-content-center">
-					<img src="img/peperage.png" alt="false">
+				<!-- Controls -->
+				<div class="row no-gutters mt-3">
+					<div class="col-auto">
+						<div class="control-acc-source">
+							<div class="title">Текст</div>
+							<div class="d-flex">
+								<button type="button" class="btn btn-primary" disabled>Вставить</button>
+								<button type="button" class="btn btn-secondary ml-2">Вставить из буфера</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="col d-flex justify-content-end align-items-end">
+						<button type="button" class="btn btn-success" data-toggle="modal" data-target="#acc-modal">Сверстать</button>
+					</div>
+				</div>
+
+				<!-- Editor -->
+				<div class="row no-gutters mc-2">
+					<div class="col-12">
+						<div class="editor" id="acc-text"></div>
+					</div>
+				</div>
+
+				<!-- Modal -->
+				<div class="modal fade" id="acc-modal" tabindex="-1" role="dialog" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-body">
+								<div class="title">Текст</div>
+								<textarea class="form-control code" rows="20"></textarea>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary code-copy" data-target="#acc-modal .code">Копировать</button>
+								<button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Закрыть</button>
+							</div>
+						</div>
+					</div>
 				</div>
 
 			</div>
 		</div>
 	</div>
+
+	<!-- <div class="mt-5 d-flex justify-content-center">
+		<img src="img/peperage.png" alt="false">
+	</div> -->
 
 	<script src="js/jquery-3.5.1.min.js"></script>
 	<script src="js/jquery-ui.min.js"></script>

@@ -34,9 +34,7 @@ $('.control-dnd-base input[type="file"]').on('change', function() {
 		$('.control-dnd-shape .title').attr('data-badge', 0);
 
 		$('.view-dnd-base').removeClass('invisible').addClass('show');
-		$('.view-dnd-shape.show').one('transitionend', function() {
-			$(this).addClass('invisible');
-		}).removeClass('show');
+		$('.view-dnd-shape.show').one('transitionend', e => $(e.target).addClass('invisible')).removeClass('show');
 
 		URL.revokeObjectURL(blob);
 	}
@@ -49,8 +47,8 @@ $('.control-dnd-shape button').on('click', function() {
 });
 
 function htmlDecode(string) {
-	var doc = new DOMParser().parseFromString(string, 'text/html');
-	return doc.documentElement.textContent;
+	var d = new DOMParser().parseFromString(string, 'text/html');
+	return d.documentElement.textContent;
 }
 
 $('.control-dnd-shape input[type="file"]').on('change', function() {
@@ -132,37 +130,35 @@ $(document).on('keydown', e => {
 
 	switch (e.which) {
 		case 37: // Left arrow key
-			if ($(object).position().left > 0) {
+			if (object.position().left > 0) {
 				e.preventDefault();
-				$(object).finish().animate({ left: '-=1' }, 0);
+				object.finish().animate({ left: '-=1' }, 0);
 			}
 		break;
 		case 38: // Up arrow key
-			if ($(object).position().top > 0) {
+			if (object.position().top > 0) {
 				e.preventDefault();
-				$(object).finish().animate({ top: '-=1' }, 0);
+				object.finish().animate({ top: '-=1' }, 0);
 			}
 		break;
 		case 39: // Right arrow key
-			if ($(object).position().left + $(object).width() < $(object).parent().width()) {
+			if (object.position().left + object.width() < object.parent().width()) {
 				e.preventDefault();
-				$(object).finish().animate({ left: '+=1' }, 0);
+				object.finish().animate({ left: '+=1' }, 0);
 			}
 		break;
 		case 40: // Down arrow key
-			if ($(object).position().top + $(object).height() < $(object).parent().height()) {
+			if (object.position().top + object.height() < object.parent().height()) {
 				e.preventDefault();
-				$(object).finish().animate({ top: '+=1' }, 0);
+				object.finish().animate({ top: '+=1' }, 0);
 			}
 		break;
 		case 46: // Delete key
-			$(object).remove();
+			object.remove();
 
 			var length = $('#dnd-canvas .shape').length;
 			$('.control-dnd-shape .title').attr('data-badge', length);
-			if (!length) $('.view-dnd-shape.show').one('transitionend', function() {
-				$(this).addClass('invisible');
-			}).removeClass('show');
+			if (!length) $('.view-dnd-shape.show').one('transitionend', e => $(e.target).addClass('invisible')).removeClass('show');
 		break;
 	}
 });
@@ -226,7 +222,7 @@ $('#dnd-modal').on('show.bs.modal', function() {
 
 $('#ddl-modal').on('show.bs.modal', function() {
 	var brackets = new Array(/\[(.*?)\]/g, /\((.*?)\)/g)[$('.control-ddl-brackets select').val()];
-	var separator = $('.control-ddl-separator select').val();
+	var separator = new Array(',', ';', '/', ' ')[$('.control-ddl-separator select').val()];
 
 	var quote = $('#ddl-quote').prop('checked');
 	var mix = $('#ddl-mix').prop('checked') ? '' : ' mix="false"';
@@ -267,4 +263,25 @@ $('#ddl-modal').on('show.bs.modal', function() {
 	code += '\n\t</sentence>' + words.join('') + '\n</dropdownlist>';
 
 	$('#ddl-modal .code').val(code);
+});
+
+$('.control-acc-source .btn-secondary').on('click', e => {
+	navigator.clipboard.readText().then(buffer => {
+		var text = htmlDecode(buffer).replace(/(?:\r\n|\r|\n)/g, '<br/>').replace(/([аеиоуыэюя]\u0301)|(?:[аеиоуыэюя])/gi, (m, p) => '<span class="vowel' + (p ? ' accent' : '') + '">' + m +  '</span>');
+
+		$('#acc-text').html(text);
+		$('#acc-text .vowel').click(e => {
+			var span = $(e.target);
+			var letter = span.text();
+
+			span.text(span.hasClass('accent') ? letter.replace('\u0301', '') : (letter + '\u0301')).toggleClass('accent');
+		});
+	}).catch(error => {
+		console.log(error);
+	});
+});
+
+$('#acc-modal').on('show.bs.modal', function() {
+	var text = $('#acc-text').html().replace(/(?:<br>)/g, '\n').replace(/(?:&nbsp;)/g, '&amp;nbsp;');
+	$('#acc-modal .code').val(htmlDecode(text));
 });
