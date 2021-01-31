@@ -1,3 +1,8 @@
+function htmlDecode(string) {
+	var d = new DOMParser().parseFromString(string, 'text/html');
+	return d.documentElement.textContent;
+}
+
 $('.control-dnd-base input[type="file"]').on('change', function() {
 	var blob = this.files[0];
 
@@ -38,18 +43,11 @@ $('.control-dnd-base input[type="file"]').on('change', function() {
 
 		URL.revokeObjectURL(blob);
 	}
-
-	$(this).val('');
 });
 
 $('.control-dnd-shape button').on('click', function() {
 	$('.control-dnd-shape input[type="file"]').click();
 });
-
-function htmlDecode(string) {
-	var d = new DOMParser().parseFromString(string, 'text/html');
-	return d.documentElement.textContent;
-}
 
 $('.control-dnd-shape input[type="file"]').on('change', function() {
 	var count = $(this.files).length;
@@ -70,8 +68,7 @@ $('.control-dnd-shape input[type="file"]').on('change', function() {
 				var shape = $('<div/>', {
 					'class': 'shape',
 					'data-file': blob.name,
-					'data-size': w + 'x' + h,
-					title: htmlDecode('&larr;&uarr;&rarr;&darr;: &plusmn;1 px\nDelete: Удалить'),
+					title: htmlDecode(blob.name + '\n' + w + 'x' + h + '\n&larr;&uarr;&rarr;&darr;: &plusmn;1 px\nDelete: Удалить'),
 					css: {
 						position: 'absolute',
 						left: x*i,
@@ -238,13 +235,9 @@ $('#ddl-modal').on('show.bs.modal', function() {
 		var p = line.trim().replace(brackets, (m, items) => {
 			var word = '\n\n\t<word number="' + number + '">';
 
-			var capitalize = false;
 			items.trim().split(separator).forEach((item, i) => {
 				var cur = item.trim();
 				if (cur === '') return;
-
-				if (i == 0 && cur[0] && cur[0] === cur[0].toUpperCase()) capitalize = true;
-				if (i > 0 && cur[0] && capitalize) cur = cur[0].toUpperCase() + cur.slice(1);
 
 				if (quote) cur = '<style type="quote">' + cur + '</style>';
 				word += '\n\t\t<variant valid="false"><varianttext>' + cur + '</varianttext></variant>';

@@ -2,22 +2,23 @@
 <html lang="ru">
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Magic</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/magic.css">
 </head>
-<body class="pt-3">
+<body class="p-3">
 	<div class="container-fixed">
-		<nav class="nav nav-tabs">
-			<a class="nav-link active" data-toggle="tab" href="#nav-ddl" role="tab" aria-selected="true">&lt;dropdownlist&gt;</a>
-			<a class="nav-link" data-toggle="tab" href="#nav-dnd" role="tab" aria-selected="false">&lt;dnd&gt;</a>
-			<a class="nav-link" data-toggle="tab" href="#nav-acc" role="tab" aria-selected="false">Ударе&#769;ния <sup>&beta;</sup></a>
+		<nav class="nav nav-tabs" role="tablist">
+			<a class="nav-link active" data-bs-toggle="tab" href="#nav-ddl" role="tab">&lt;dropdownlist&gt;</a>
+			<a class="nav-link" data-bs-toggle="tab" href="#nav-dnd" role="tab">&lt;dnd&gt;</a>
+			<a class="nav-link" data-bs-toggle="tab" href="#nav-acc" role="tab">Ударе&#769;ния <sup>&beta;</sup></a>
 		</nav>
 
 		<div class="tab-content">
 			<div class="tab-pane fade active show" id="nav-ddl" role="tabpanel">
 
-				<div class="row no-gutters mt-3">
+				<div class="row g-0 mt-3">
 					<div class="col-12">
 						<div class="alert alert-primary mb-0" role="alert">
 							<p class="mb-0">&bull; Правильный вариант не выделяет, нужно отмечать вручную.</p>
@@ -26,7 +27,7 @@
 				</div>
 
 				<!-- Controls -->
-				<div class="row no-gutters mt-3">
+				<div class="row g-0 mt-3">
 					<div class="col-1">
 						<div class="control-ddl-brackets">
 							<div class="title">Скобки</div>
@@ -37,10 +38,10 @@
 						</div>
 					</div>
 
-					<div class="col-auto ml-3">
+					<div class="col-1 ms-3">
 						<div class="control-ddl-separator">
 							<div class="title">Разделитель</div>
-							<select class="form-select fixed-1">
+							<select class="form-select">
 								<option value="0" selected>,</option>
 								<option value="1">;</option>
 								<option value="2">/</option>
@@ -49,7 +50,7 @@
 						</div>
 					</div>
 
-					<div class="col-auto ml-5 d-flex justify-content-end flex-column">
+					<div class="col-auto ms-5 d-flex justify-content-end flex-column">
 						<div class="form-check form-switch">
 							<input class="form-check-input" type="checkbox" id="ddl-quote" checked>
 							<label class="form-check-label" for="ddl-quote">Выделить курсивом</label>
@@ -60,7 +61,7 @@
 						</div>
 					</div>
 
-					<div class="col-auto ml-3 d-flex justify-content-end flex-column">
+					<div class="col-auto ms-3 d-flex justify-content-end flex-column">
 						<div class="form-check form-switch">
 							<input class="form-check-input" type="checkbox" id="ddl-align">
 							<label class="form-check-label" for="ddl-align">Выровнять текст по краю</label>
@@ -69,12 +70,12 @@
 					</div>
 
 					<div class="col d-flex justify-content-end align-items-end">
-						<button type="button" class="btn btn-success" data-toggle="modal" data-target="#ddl-modal">Сверстать</button>
+						<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ddl-modal">Сверстать</button>
 					</div>
 				</div>
 
 				<!-- Text -->
-				<div class="row no-gutters mc-1">
+				<div class="row g-0 mt-4">
 					<div class="col-12">
 						<div class="title">Текст</div>
 						<div class="position-relative float-right">
@@ -87,7 +88,7 @@
 				</div>
 
 				<!-- Modal -->
-				<div class="modal fade" id="ddl-modal" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal fade" id="ddl-modal" data-bs-backdrop="static" tabindex="-1" role="dialog">
 					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 						<div class="modal-content">
 							<div class="modal-body">
@@ -96,7 +97,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-primary code-copy" data-target="#ddl-modal .code">Копировать</button>
-								<button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Закрыть</button>
+								<button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">Закрыть</button>
 							</div>
 						</div>
 					</div>
@@ -105,7 +106,7 @@
 			</div>
 			<div class="tab-pane fade" id="nav-dnd" role="tabpanel">
 
-				<div class="row no-gutters mt-3">
+				<div class="row g-0 mt-3">
 					<div class="col-12">
 						<div class="alert alert-primary mb-0" role="alert">
 							<p class="mb-0">&bull; Принимает изображения в оригинальном масштабе, уменьшает их в 2 раза.</p>
@@ -115,43 +116,37 @@
 				</div>
 
 				<!-- Controls -->
-				<div class="row no-gutters mt-3">
+				<div class="row g-0 mt-3">
 					<div class="col-3">
 						<div class="control-dnd-base">
 							<div class="title">Основа</div>
-							<div class="form-file">
-								<input type="file" class="form-file-input" accept="image/pjpeg, image/png" title>
-								<label class="form-file-label">
-									<span class="form-file-text">Выберите файл</span>
-									<span class="form-file-button">Обзор</span>
-								</label>
-							</div>
+							<input type="file" class="form-control" accept="image/pjpeg, image/png">
 						</div>
 					</div>
 
-					<div class="col-2 ml-3">
+					<div class="col-2 ms-3">
 						<div class="control-dnd-solution view-dnd-base fade invisible">
 							<div class="title">Решение</div>
 							<input type="text" class="form-control">
 						</div>
 					</div>
 
-					<div class="col-auto ml-5">
+					<div class="col-auto ms-5">
 						<div class="control-dnd-shape view-dnd-base fade invisible">
 							<div class="title" data-badge="0">Плашки</div>
 							<button type="button" class="btn btn-primary">Добавить</button>
-							<input type="file" class="d-none" accept="image/pjpeg, image/png" multiple title>
+							<input type="file" class="d-none" accept="image/pjpeg, image/png" multiple>
 						</div>
 					</div>
 
-					<div class="col-1 ml-3">
+					<div class="col-1 ms-3">
 						<div class="control-dnd-step view-dnd-shape fade invisible">
 							<div class="title">Шаг</div>
 							<input type="text" class="form-control" value="50">
 						</div>
 					</div>
 
-					<div class="col-2 ml-3">
+					<div class="col-2 ms-3">
 						<div class="control-dnd-opacity view-dnd-shape fade invisible">
 							<div class="title" data-badge="100%">Прозрачность</div>
 							<div class="slider">
@@ -162,20 +157,20 @@
 
 					<div class="col d-flex justify-content-end align-items-end">
 						<div class="view-dnd-shape fade invisible">
-							<button type="button" class="btn btn-success" data-toggle="modal" data-target="#dnd-modal">Сверстать</button>
+							<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#dnd-modal">Сверстать</button>
 						</div>
 					</div>
 				</div>
 
 				<!-- Canvas -->
-				<div class="row no-gutters mt-5">
+				<div class="row g-0 mt-5">
 					<div class="col-12 d-flex justify-content-center">
 						<div class="canvas" id="dnd-canvas"></div>
 					</div>
 				</div>
 
 				<!-- Modal -->
-				<div class="modal fade" id="dnd-modal" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal fade" id="dnd-modal" data-bs-backdrop="static" tabindex="-1" role="dialog">
 					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 						<div class="modal-content">
 							<div class="modal-body">
@@ -184,7 +179,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-primary code-copy" data-target="#dnd-modal .code">Копировать</button>
-								<button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Закрыть</button>
+								<button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">Закрыть</button>
 							</div>
 						</div>
 					</div>
@@ -194,31 +189,31 @@
 			<div class="tab-pane fade" id="nav-acc" role="tabpanel">
 
 				<!-- Controls -->
-				<div class="row no-gutters mt-3">
+				<div class="row g-0 mt-3">
 					<div class="col-auto">
 						<div class="control-acc-source">
 							<div class="title">Текст</div>
 							<div class="d-flex">
 								<button type="button" class="btn btn-primary" disabled>Вставить</button>
-								<button type="button" class="btn btn-secondary ml-2">Вставить из буфера</button>
+								<button type="button" class="btn btn-secondary ms-2">Вставить из буфера</button>
 							</div>
 						</div>
 					</div>
 
 					<div class="col d-flex justify-content-end align-items-end">
-						<button type="button" class="btn btn-success" data-toggle="modal" data-target="#acc-modal">Сверстать</button>
+						<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#acc-modal">Сверстать</button>
 					</div>
 				</div>
 
 				<!-- Editor -->
-				<div class="row no-gutters mc-2">
+				<div class="row g-0 mt-4">
 					<div class="col-12">
 						<div class="editor" id="acc-text"></div>
 					</div>
 				</div>
 
 				<!-- Modal -->
-				<div class="modal fade" id="acc-modal" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal fade" id="acc-modal" data-bs-backdrop="static" tabindex="-1" role="dialog">
 					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 						<div class="modal-content">
 							<div class="modal-body">
@@ -227,7 +222,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-primary code-copy" data-target="#acc-modal .code">Копировать</button>
-								<button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Закрыть</button>
+								<button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">Закрыть</button>
 							</div>
 						</div>
 					</div>
