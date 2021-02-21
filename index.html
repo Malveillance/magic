@@ -12,12 +12,14 @@
 		<nav class="nav nav-tabs" role="tablist">
 			<a class="nav-link active" data-bs-toggle="tab" href="#nav-ddl" role="tab">&lt;dropdownlist&gt;</a>
 			<a class="nav-link" data-bs-toggle="tab" href="#nav-dnd" role="tab">&lt;dnd&gt;</a>
-			<a class="nav-link" data-bs-toggle="tab" href="#nav-acc" role="tab">Ударе&#769;ния <sup>&beta;</sup></a>
+			<a class="nav-link" data-bs-toggle="tab" href="#nav-label" role="tab">&lt;label&gt;</a>
+			<a class="nav-link" data-bs-toggle="tab" href="#nav-accent" role="tab">Ударе&#769;ния <sup>&beta;</sup></a>
 		</nav>
 
 		<div class="tab-content">
 			<div class="tab-pane fade active show" id="nav-ddl" role="tabpanel">
 
+				<!-- Info -->
 				<div class="row g-0 mt-3">
 					<div class="col-12">
 						<div class="alert alert-primary mb-0" role="alert">
@@ -29,7 +31,7 @@
 				<!-- Controls -->
 				<div class="row g-0 mt-3">
 					<div class="col-1">
-						<div class="control-ddl-brackets">
+						<div class="ddl-brackets">
 							<div class="title">Скобки</div>
 							<select class="form-select">
 								<option value="0" selected>[ &hellip; ]</option>
@@ -39,7 +41,7 @@
 					</div>
 
 					<div class="col-1 ms-3">
-						<div class="control-ddl-separator">
+						<div class="ddl-separator">
 							<div class="title">Разделитель</div>
 							<select class="form-select">
 								<option value="0" selected>,</option>
@@ -106,6 +108,7 @@
 			</div>
 			<div class="tab-pane fade" id="nav-dnd" role="tabpanel">
 
+				<!-- Info -->
 				<div class="row g-0 mt-3">
 					<div class="col-12">
 						<div class="alert alert-primary mb-0" role="alert">
@@ -118,21 +121,21 @@
 				<!-- Controls -->
 				<div class="row g-0 mt-3">
 					<div class="col-3">
-						<div class="control-dnd-base">
+						<div class="dnd-base">
 							<div class="title">Основа</div>
 							<input type="file" class="form-control" accept="image/pjpeg, image/png">
 						</div>
 					</div>
 
 					<div class="col-2 ms-3">
-						<div class="control-dnd-solution view-dnd-base fade invisible">
+						<div class="dnd-solution dnd-group-1 fade invisible">
 							<div class="title">Решение</div>
 							<input type="text" class="form-control">
 						</div>
 					</div>
 
 					<div class="col-auto ms-5">
-						<div class="control-dnd-shape view-dnd-base fade invisible">
+						<div class="dnd-add dnd-group-1 fade invisible">
 							<div class="title" data-badge="0">Плашки</div>
 							<button type="button" class="btn btn-primary">Добавить</button>
 							<input type="file" class="d-none" accept="image/pjpeg, image/png" multiple>
@@ -140,15 +143,15 @@
 					</div>
 
 					<div class="col-1 ms-3">
-						<div class="control-dnd-step view-dnd-shape fade invisible">
+						<div class="dnd-step dnd-group-2 fade invisible">
 							<div class="title">Шаг</div>
 							<input type="text" class="form-control" value="50">
 						</div>
 					</div>
 
 					<div class="col-2 ms-3">
-						<div class="control-dnd-opacity view-dnd-shape fade invisible">
-							<div class="title" data-badge="100%">Прозрачность</div>
+						<div class="dnd-opacity dnd-group-2 fade invisible">
+							<div class="title" data-badge="100">Прозрачность</div>
 							<div class="slider">
 								<input type="range" min="0.4" max="1" step="0.1" value="1" title>
 							</div>
@@ -156,7 +159,7 @@
 					</div>
 
 					<div class="col d-flex justify-content-end align-items-end">
-						<div class="view-dnd-shape fade invisible">
+						<div class="dnd-group-2 fade invisible">
 							<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#dnd-modal">Сверстать</button>
 						</div>
 					</div>
@@ -186,12 +189,61 @@
 				</div>
 
 			</div>
-			<div class="tab-pane fade" id="nav-acc" role="tabpanel">
+			<div class="tab-pane fade" id="nav-label" role="tabpanel">
+
+				<!-- Controls -->
+				<div class="row g-0 mt-3">
+					<div class="col-3">
+						<div class="label-base">
+							<div class="title">Фон</div>
+							<input type="file" class="form-control" accept="image/pjpeg, image/png">
+						</div>
+					</div>
+
+					<div class="col-auto ms-5">
+						<div class="label-add label-group-1 fade invisible">
+							<div class="title" data-badge="0">Лейблы</div>
+							<button type="button" class="btn btn-primary">Добавить</button>
+						</div>
+					</div>
+
+					<div class="col d-flex justify-content-end align-items-end">
+						<div class="label-group-2 fade invisible">
+							<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#label-modal">Сверстать</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Canvas -->
+				<div class="row g-0 mt-5">
+					<div class="col-12 d-flex justify-content-center">
+						<div class="canvas" id="label-canvas"></div>
+					</div>
+				</div>
+
+				<!-- Modal -->
+				<div class="modal fade" id="label-modal" data-bs-backdrop="static" tabindex="-1" role="dialog">
+					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-body">
+								<div class="title">Код</div>
+								<textarea class="form-control code" rows="20"></textarea>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary code-copy" data-target="#label-modal .code">Копировать</button>
+								<button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">Закрыть</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="tab-pane fade" id="nav-accent" role="tabpanel">
 
 				<!-- Controls -->
 				<div class="row g-0 mt-3">
 					<div class="col-auto">
-						<div class="control-acc-source">
+						<div class="accent-source">
 							<div class="title">Текст</div>
 							<div class="d-flex">
 								<button type="button" class="btn btn-primary" disabled>Вставить</button>
@@ -201,19 +253,19 @@
 					</div>
 
 					<div class="col d-flex justify-content-end align-items-end">
-						<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#acc-modal">Сверстать</button>
+						<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#accent-modal">Сверстать</button>
 					</div>
 				</div>
 
 				<!-- Editor -->
 				<div class="row g-0 mt-4">
 					<div class="col-12">
-						<div class="editor" id="acc-text"></div>
+						<div class="editor" id="accent-text"></div>
 					</div>
 				</div>
 
 				<!-- Modal -->
-				<div class="modal fade" id="acc-modal" data-bs-backdrop="static" tabindex="-1" role="dialog">
+				<div class="modal fade" id="accent-modal" data-bs-backdrop="static" tabindex="-1" role="dialog">
 					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 						<div class="modal-content">
 							<div class="modal-body">
@@ -221,7 +273,7 @@
 								<textarea class="form-control code" rows="20"></textarea>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary code-copy" data-target="#acc-modal .code">Копировать</button>
+								<button type="button" class="btn btn-primary code-copy" data-target="#accent-modal .code">Копировать</button>
 								<button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">Закрыть</button>
 							</div>
 						</div>
@@ -231,10 +283,6 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- <div class="mt-5 d-flex justify-content-center">
-		<img src="img/peperage.png" alt="false">
-	</div> -->
 
 	<script src="js/jquery-3.5.1.min.js"></script>
 	<script src="js/jquery-ui.min.js"></script>

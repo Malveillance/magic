@@ -1,9 +1,19 @@
-function htmlDecode(string) {
-	var d = new DOMParser().parseFromString(string, 'text/html');
+function htmlDecode(s) {
+	var d = new DOMParser().parseFromString(s, 'text/html');
 	return d.documentElement.textContent;
 }
 
-$('.control-dnd-base input[type="file"]').on('change', function() {
+const MO_CONFIG = { childList: true, attributes: false, characterData: false };
+
+new MutationObserver(function() {
+	var length = $('#dnd-canvas .shape').length;
+	$('.dnd-add .title').attr('data-badge', length);
+
+	if (length) $('.dnd-group-2').removeClass('invisible').addClass('show');
+	else $('.dnd-group-2.show').one('transitionend', e => $(e.target).addClass('invisible')).removeClass('show');
+}).observe($('#dnd-canvas')[0], MO_CONFIG);
+
+$('.dnd-base input[type="file"]').on('change', function() {
 	var blob = this.files[0];
 
 	if (blob && (blob.type == 'image/jpeg' || blob.type == 'image/png')) {
@@ -14,7 +24,7 @@ $('.control-dnd-base input[type="file"]').on('change', function() {
 			var w = Math.floor(this.naturalWidth/2);
 			var h = Math.floor(this.naturalHeight/2);
 
-			var base = $('<div/>', {
+			$('<div/>', {
 				'class': 'base',
 				'data-file': blob.name,
 				css: {
@@ -25,31 +35,26 @@ $('.control-dnd-base input[type="file"]').on('change', function() {
 				appendTo: '#dnd-canvas'
 			});
 
-			$('.control-dnd-base .title').attr('data-badge', w + 'х' + h);
+			$('.dnd-base .title').attr('data-badge', w + 'х' + h);
+
+			URL.revokeObjectURL(blob);
 		});
 
 		image.src = URL.createObjectURL(blob);
 
-		$(this).next().children('.form-file-text').html(blob.name);
+		var id = blob.name.split('.').slice(0, -1).join('.');
+		var next = Number(id) ? Number(id) + 1 : 1;
+		$('.dnd-solution input').val(('00000' + next).slice(-6));
 
-		var name = blob.name.split('.').slice(0, -1).join('.');
-		var next = Number(name) ? Number(name) + 1 : 1;
-		$('.control-dnd-solution input').val(('00000' + next).slice(-6));
-
-		$('.control-dnd-shape .title').attr('data-badge', 0);
-
-		$('.view-dnd-base').removeClass('invisible').addClass('show');
-		$('.view-dnd-shape.show').one('transitionend', e => $(e.target).addClass('invisible')).removeClass('show');
-
-		URL.revokeObjectURL(blob);
+		$('.dnd-group-1').removeClass('invisible').addClass('show');
 	}
 });
 
-$('.control-dnd-shape button').on('click', function() {
-	$('.control-dnd-shape input[type="file"]').click();
+$('.dnd-add button').on('click', function() {
+	$('.dnd-add input[type="file"]').click();
 });
 
-$('.control-dnd-shape input[type="file"]').on('change', function() {
+$('.dnd-add input[type="file"]').on('change', function() {
 	var count = $(this.files).length;
 
 	$(this.files).each(function(i) {
@@ -65,17 +70,18 @@ $('.control-dnd-shape input[type="file"]').on('change', function() {
 				if (x > w) x = w;
 				var y = $('#dnd-canvas').height() - h;
 
-				var shape = $('<div/>', {
+				$('<div/>', {
 					'class': 'shape',
 					'data-file': blob.name,
 					title: htmlDecode(blob.name + '\n' + w + 'x' + h + '\n&larr;&uarr;&rarr;&darr;: &plusmn;1 px\nDelete: Удалить'),
+					tabindex: 0,
 					css: {
 						position: 'absolute',
 						left: x*i,
 						top: y,
 						width: w,
 						height: h,
-						opacity: $('.control-dnd-opacity input').val(),
+						opacity: $('.dnd-opacity input').val(),
 						backgroundImage: 'url(' + URL.createObjectURL(blob) + ')'
 					},
 					draggable: {
@@ -86,96 +92,224 @@ $('.control-dnd-shape input[type="file"]').on('change', function() {
 					},
 					on: {
 						mousedown: e => {
-							if ($(e.target).hasClass('selected')) return;
+							if (e.target === e.currentTarget) $(e.target).focus();
+						},
+						keydown: e => {
+							var target = $(e.target);
 
-							$('#dnd-canvas .shape').removeClass('selected');
-							$(e.target).addClass('selected');
+							switch (e.which) {
+								case 37: // Left arrow key
+									if (target.position().left > 0) {
+										e.preventDefault();
+										target.finish().animate({ left: '-=1' }, 0);
+									}
+								break;
+								case 38: // Up arrow key
+									if (target.position().top > 0) {
+										e.preventDefault();
+										target.finish().animate({ top: '-=1' }, 0);
+									}
+								break;
+								case 39: // Right arrow key
+									if (target.position().left + target.width() < target.parent().width()) {
+										e.preventDefault();
+										target.finish().animate({ left: '+=1' }, 0);
+									}
+								break;
+								case 40: // Down arrow key
+									if (target.position().top + target.height() < target.parent().height()) {
+										e.preventDefault();
+										target.finish().animate({ top: '+=1' }, 0);
+									}
+								break;
+								case 46: // Delete key
+									e.preventDefault();
+									target.remove();
+								break;
+							}
 						}
 					},
 					appendTo: '#dnd-canvas'
 				});
+
+				URL.revokeObjectURL(blob);
 			});
 
 			image.src = URL.createObjectURL(blob);
-
-			var data = Number($('.control-dnd-shape .title').attr('data-badge'));
-			$('.control-dnd-shape .title').attr('data-badge', ++data);
-
-			$('.view-dnd-shape').removeClass('invisible').addClass('show');
-
-			URL.revokeObjectURL(blob);
 		}
 	});
 
 	$(this).val('');
 });
 
-$('.control-dnd-opacity input').on('input', function() {
+$('.dnd-opacity input').on('input', function() {
 	$('#dnd-canvas .shape').css('opacity', $(this).val());
-	$('.control-dnd-opacity .title').attr('data-badge', $(this).val()*100 + '%');
+	$('.dnd-opacity .title').attr('data-badge', +($(this).val()*100).toFixed());
 });
 
-$(window).on('mousedown', e => {
-	if ($(e.target).hasClass('selected')) return;
+new MutationObserver(function() {
+	var length = $('#label-canvas .label').length;
+	$('.label-add .title').attr('data-badge', length);
 
-	$('.canvas .ui-draggable').removeClass('selected');
-});
+	if (length) $('.label-group-2').removeClass('invisible').addClass('show');
+	else $('.label-group-2.show').one('transitionend', e => $(e.target).addClass('invisible')).removeClass('show');
+}).observe($('#label-canvas')[0], MO_CONFIG);
 
-$(document).on('keydown', e => {
-	var object = $('.canvas .selected');
-	if (!object.length) return;
+$('.label-base input[type="file"]').on('change', function() {
+	var blob = this.files[0];
 
-	switch (e.which) {
-		case 37: // Left arrow key
-			if (object.position().left > 0) {
-				e.preventDefault();
-				object.finish().animate({ left: '-=1' }, 0);
-			}
-		break;
-		case 38: // Up arrow key
-			if (object.position().top > 0) {
-				e.preventDefault();
-				object.finish().animate({ top: '-=1' }, 0);
-			}
-		break;
-		case 39: // Right arrow key
-			if (object.position().left + object.width() < object.parent().width()) {
-				e.preventDefault();
-				object.finish().animate({ left: '+=1' }, 0);
-			}
-		break;
-		case 40: // Down arrow key
-			if (object.position().top + object.height() < object.parent().height()) {
-				e.preventDefault();
-				object.finish().animate({ top: '+=1' }, 0);
-			}
-		break;
-		case 46: // Delete key
-			object.remove();
+	if (blob && (blob.type == 'image/jpeg' || blob.type == 'image/png')) {
+		$('#label-canvas').empty();
 
-			var length = $('#dnd-canvas .shape').length;
-			$('.control-dnd-shape .title').attr('data-badge', length);
-			if (!length) $('.view-dnd-shape.show').one('transitionend', e => $(e.target).addClass('invisible')).removeClass('show');
-		break;
+		var image = new Image();
+		$(image).one('load', function() {
+			var w = Math.floor(this.naturalWidth/2);
+			var h = Math.floor(this.naturalHeight/2);
+
+			$('<div/>', {
+				'class': 'base',
+				'data-file': blob.name,
+				css: {
+					width: w,
+					height: h,
+					backgroundImage: 'url(' + URL.createObjectURL(blob) + ')'
+				},
+				appendTo: '#label-canvas'
+			});
+
+			$('.label-base .title').attr('data-badge', w + 'х' + h);
+
+			URL.revokeObjectURL(blob);
+		});
+
+		image.src = URL.createObjectURL(blob);
+
+		$('.label-group-1').removeClass('invisible').addClass('show');
 	}
 });
 
-(function($) {
-	$.fn.shuffle = function() {
-		// credits: http://bost.ocks.org/mike/shuffle/
-		var m = this.length, t, i;
+const LABEL_NAME = 'Текст';
 
-		while (m) {
-			i = Math.floor(Math.random()*m--);
+$.fn.edit = function() {
+	var prev = this.text();
+	var w = this.width() + 9;
 
-			t = this[m];
-			this[m] = this[i];
-			this[i] = t;
-		}
+	this.text('');
 
-		return this;
-	};
-}($));
+	$('<input/>', {
+		type: 'text',
+		value: prev,
+		title: '',
+		css: {
+			width: (w > 160 ? w : 160)
+		},
+		on: {
+			keydown: e => {
+				e.stopPropagation();
+				if (e.which == 13 || e.which == 27) {
+					$(e.target).remove();
+					this.focus();
+				}
+			},
+			focus: e => {
+				e.target.setSelectionRange(0, $(e.target).val().length);
+			},
+			blur: e => {
+				$(e.target).remove();
+			}
+		},
+		one: {
+			remove: e => {
+				this.text(htmlDecode($(e.target).val()) || prev);
+			}
+		},
+		appendTo: this
+	}).focus();
+
+	return this;
+};
+
+$('.label-add button').on('click', function() {
+	$('<div/>', {
+		'class': 'label',
+		text: LABEL_NAME,
+		title: htmlDecode('&larr;&uarr;&rarr;&darr;: &plusmn;1 px\nEnter: Редактировать\nDelete: Удалить'),
+		tabindex: 0,
+		css: {
+			position: 'absolute',
+			left: 0,
+			top: 0
+		},
+		draggable: {
+			containment: '#label-canvas',
+			cursor: 'grabbing'
+		},
+		on: {
+			mousedown: e => {
+				if (e.target === e.currentTarget) $(e.target).focus();
+			},
+			keydown: e => {
+				var target = $(e.target);
+
+				switch (e.which) {
+					case 37: // Left arrow key
+						if (target.position().left > 0) {
+							e.preventDefault();
+							target.finish().animate({ left: '-=1' }, 0);
+						}
+					break;
+					case 38: // Up arrow key
+						if (target.position().top > 0) {
+							e.preventDefault();
+							target.finish().animate({ top: '-=1' }, 0);
+						}
+					break;
+					case 39: // Right arrow key
+						if (target.position().left + target.width() < target.parent().width()) {
+							e.preventDefault();
+							target.finish().animate({ left: '+=1' }, 0);
+						}
+					break;
+					case 40: // Down arrow key
+						if (target.position().top + target.height() < target.parent().height()) {
+							e.preventDefault();
+							target.finish().animate({ top: '+=1' }, 0);
+						}
+					break;
+					case 13: // Enter key
+					case 113: // F2 key
+						e.preventDefault();
+						target.edit();
+					break;
+					case 46: // Delete key
+						e.preventDefault();
+						target.remove();
+					break;
+				}
+			},
+			dblclick: e => {
+				if (e.target === e.currentTarget) $(e.target).edit();
+			}
+		},
+		appendTo: '#label-canvas'
+	}).focus();
+});
+
+$('.accent-source .btn-secondary').on('click', e => {
+	navigator.clipboard.readText().then(buffer => {
+		var text = htmlDecode(buffer).replace(/(?:\r\n|\r|\n)/g, '<br/>').replace(/([аеиоуыэюя]\u0301)|(?:[аеиоуыэюя])/gi, (m, p) => '<span class="vowel' + (p ? ' acute' : '') + '">' + m + '</span>');
+
+		$('#accent-text').html(text);
+		$('#accent-text .vowel').click(e => {
+			var span = $(e.target);
+			var letter = span.text();
+
+			span.text(span.hasClass('acute') ? letter.replace('\u0301', '') : (letter + '\u0301')).toggleClass('acute');
+		});
+	}).catch(error => {
+		console.log(error);
+	});
+});
 
 $('.text-clear').on('click', e => {
 	$(e.target.dataset.target).val('');
@@ -186,8 +320,23 @@ $('.code-copy').on('click', e => {
 	document.execCommand('copy');
 });
 
+$.fn.shuffle = function() {
+	// credits: http://bost.ocks.org/mike/shuffle/
+	var m = this.length, t, i;
+
+	while (m) {
+		i = Math.floor(Math.random()*m--);
+
+		t = this[m];
+		this[m] = this[i];
+		this[i] = t;
+	}
+
+	return this;
+};
+
 $('#dnd-modal').on('show.bs.modal', function() {
-	var next = $('.control-dnd-solution input').val();
+	var next = $('.dnd-solution input').val();
 	var code = '<solution>\n\t<step>\n\t\t<figure align="center">\n\t\t\t<object excel="' + next + '" border="0"/>\n\t\t</figure>\n\t</step>\n</solution>\n\n';
 
 	var file = $('#dnd-canvas .base').data('file') || '';
@@ -204,7 +353,7 @@ $('#dnd-modal').on('show.bs.modal', function() {
 		var x = $(this).position().left;
 		var y = $(this).position().top;
 
-		var rx = Number($('.control-dnd-step input').val()) || 50;
+		var rx = Number($('.dnd-step input').val()) || 50;
 		var ry = ch - h;
 
 		code += '\t<shape file="' + $(this).data('file') + '" width="' + w + '" height="' + h + '" coords="' + rx*i + ', ' + ry + '">\n';
@@ -218,8 +367,8 @@ $('#dnd-modal').on('show.bs.modal', function() {
 });
 
 $('#ddl-modal').on('show.bs.modal', function() {
-	var brackets = new Array(/\[(.*?)\]/g, /\((.*?)\)/g)[$('.control-ddl-brackets select').val()];
-	var separator = new Array(',', ';', '/', ' ')[$('.control-ddl-separator select').val()];
+	var brackets = new Array(/\[(.*?)\]/g, /\((.*?)\)/g)[$('.ddl-brackets select').val()];
+	var separator = new Array(',', ';', '/', ' ')[$('.ddl-separator select').val()];
 
 	var quote = $('#ddl-quote').prop('checked');
 	var mix = $('#ddl-mix').prop('checked') ? '' : ' mix="false"';
@@ -258,23 +407,25 @@ $('#ddl-modal').on('show.bs.modal', function() {
 	$('#ddl-modal .code').val(code);
 });
 
-$('.control-acc-source .btn-secondary').on('click', e => {
-	navigator.clipboard.readText().then(buffer => {
-		var text = htmlDecode(buffer).replace(/(?:\r\n|\r|\n)/g, '<br/>').replace(/([аеиоуыэюя]\u0301)|(?:[аеиоуыэюя])/gi, (m, p) => '<span class="vowel' + (p ? ' accent' : '') + '">' + m +  '</span>');
+$('#label-modal').on('show.bs.modal', function() {
+	var id = $('#label-canvas .base').data('file').split('.').slice(0, -1).join('.');
+	var cw = $('#label-canvas').width() || '0';
+	var ch = $('#label-canvas').height() || '0';
+	var code = '<figure align="center">\n\t<object excel="' + id + '" width="' + cw + '" height="' + ch + '" border="0">\n';
 
-		$('#acc-text').html(text);
-		$('#acc-text .vowel').click(e => {
-			var span = $(e.target);
-			var letter = span.text();
+	$('#label-canvas .label').each(function(i) {
+		var x = $(this).position().left;
+		var y = $(this).position().top;
 
-			span.text(span.hasClass('accent') ? letter.replace('\u0301', '') : (letter + '\u0301')).toggleClass('accent');
-		});
-	}).catch(error => {
-		console.log(error);
+		code += '\t\t<label coords="' + x + ', ' + y + '">' + $(this).text() + '</label>\n';
 	});
+
+	code += '\t</object>\n</figure>';
+
+	$('#label-modal .code').val(code);
 });
 
-$('#acc-modal').on('show.bs.modal', function() {
-	var text = $('#acc-text').html().replace(/(?:<br>)/g, '\n').replace(/(?:&nbsp;)/g, '&amp;nbsp;');
-	$('#acc-modal .code').val(htmlDecode(text));
+$('#accent-modal').on('show.bs.modal', function() {
+	var text = $('#accent-text').html().replace(/(?:<br>)/g, '\n').replace(/(?:&nbsp;)/g, '&amp;nbsp;');
+	$('#accent-modal .code').val(htmlDecode(text));
 });
