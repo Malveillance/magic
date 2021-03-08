@@ -86,9 +86,10 @@ $('.dnd-add input[type="file"]').on('change', function() {
 					},
 					draggable: {
 						containment: '#dnd-canvas',
-						cursor: 'grabbing',
 						snap: '#dnd-canvas .shape',
-						snapTolerance: 10
+						snapTolerance: 10,
+						distance: 3,
+						addClasses: false
 					},
 					on: {
 						mousedown: e => {
@@ -99,31 +100,18 @@ $('.dnd-add input[type="file"]').on('change', function() {
 
 							switch (e.which) {
 								case 37: // Left arrow key
-									if (target.position().left > 0) {
-										e.preventDefault();
-										target.finish().animate({ left: '-=1' }, 0);
-									}
+									if (target.position().left > 0) target.finish().animate({ left: '-=1' }, 50);
 								break;
 								case 38: // Up arrow key
-									if (target.position().top > 0) {
-										e.preventDefault();
-										target.finish().animate({ top: '-=1' }, 0);
-									}
+									if (target.position().top > 0) target.finish().animate({ top: '-=1' }, 50);
 								break;
 								case 39: // Right arrow key
-									if (target.position().left + target.width() < target.parent().width()) {
-										e.preventDefault();
-										target.finish().animate({ left: '+=1' }, 0);
-									}
+									if (target.position().left + target.width() < target.parent().width()) target.finish().animate({ left: '+=1' }, 50);
 								break;
 								case 40: // Down arrow key
-									if (target.position().top + target.height() < target.parent().height()) {
-										e.preventDefault();
-										target.finish().animate({ top: '+=1' }, 0);
-									}
+									if (target.position().top + target.height() < target.parent().height()) target.finish().animate({ top: '+=1' }, 50);
 								break;
 								case 46: // Delete key
-									e.preventDefault();
 									target.remove();
 								break;
 							}
@@ -143,8 +131,9 @@ $('.dnd-add input[type="file"]').on('change', function() {
 });
 
 $('.dnd-opacity input').on('input', function() {
-	$('#dnd-canvas .shape').css('opacity', $(this).val());
-	$('.dnd-opacity .title').attr('data-badge', +($(this).val()*100).toFixed());
+	var value = $(this).val();
+	$('#dnd-canvas .shape').css('opacity', value);
+	$('.dnd-opacity .title').attr('data-badge', (value*100).toFixed());
 });
 
 new MutationObserver(function() {
@@ -206,13 +195,13 @@ $.fn.edit = function() {
 		on: {
 			keydown: e => {
 				e.stopPropagation();
-				if (e.which == 13 || e.which == 27) {
+				if (e.which == 13 || e.which == 27) { // Enter and Esc key
 					$(e.target).remove();
 					this.focus();
 				}
 			},
 			focus: e => {
-				e.target.setSelectionRange(0, $(e.target).val().length);
+				$(e.target).select();
 			},
 			blur: e => {
 				$(e.target).remove();
@@ -220,7 +209,7 @@ $.fn.edit = function() {
 		},
 		one: {
 			remove: e => {
-				this.text(htmlDecode($(e.target).val()) || prev);
+				this.text($(e.target).val() || prev);
 			}
 		},
 		appendTo: this
@@ -242,7 +231,8 @@ $('.label-add button').on('click', function() {
 		},
 		draggable: {
 			containment: '#label-canvas',
-			cursor: 'grabbing'
+			distance: 3,
+			addClasses: false
 		},
 		on: {
 			mousedown: e => {
@@ -253,28 +243,16 @@ $('.label-add button').on('click', function() {
 
 				switch (e.which) {
 					case 37: // Left arrow key
-						if (target.position().left > 0) {
-							e.preventDefault();
-							target.finish().animate({ left: '-=1' }, 0);
-						}
+						if (target.position().left > 0) target.finish().animate({ left: '-=1' }, 50);
 					break;
 					case 38: // Up arrow key
-						if (target.position().top > 0) {
-							e.preventDefault();
-							target.finish().animate({ top: '-=1' }, 0);
-						}
+						if (target.position().top > 0) target.finish().animate({ top: '-=1' }, 50);
 					break;
 					case 39: // Right arrow key
-						if (target.position().left + target.width() < target.parent().width()) {
-							e.preventDefault();
-							target.finish().animate({ left: '+=1' }, 0);
-						}
+						if (target.position().left + target.width() < target.parent().width()) target.finish().animate({ left: '+=1' }, 50);
 					break;
 					case 40: // Down arrow key
-						if (target.position().top + target.height() < target.parent().height()) {
-							e.preventDefault();
-							target.finish().animate({ top: '+=1' }, 0);
-						}
+						if (target.position().top + target.height() < target.parent().height()) target.finish().animate({ top: '+=1' }, 50);
 					break;
 					case 13: // Enter key
 					case 113: // F2 key
@@ -282,20 +260,30 @@ $('.label-add button').on('click', function() {
 						target.edit();
 					break;
 					case 46: // Delete key
-						e.preventDefault();
 						target.remove();
 					break;
 				}
 			},
 			dblclick: e => {
-				if (e.target === e.currentTarget) $(e.target).edit();
+				if (e.target === e.currentTarget) {
+					e.preventDefault();
+					$(e.target).edit();
+				}
 			}
 		},
 		appendTo: '#label-canvas'
 	}).focus();
 });
 
-$('.accent-source .btn-secondary').on('click', e => {
+$('.label-add button').on('mouseenter', function() {
+	$('#label-canvas').addClass('hl');
+});
+
+$('.label-add button').on('mouseleave', function() {
+	$('#label-canvas').removeClass('hl');
+});
+
+$('.accent-source button').on('click', e => {
 	navigator.clipboard.readText().then(buffer => {
 		var text = htmlDecode(buffer).replace(/(?:\r\n|\r|\n)/g, '<br/>').replace(/([аеиоуыэюя]\u0301)|(?:[аеиоуыэюя])/gi, (m, p) => '<span class="vowel' + (p ? ' acute' : '') + '">' + m + '</span>');
 
@@ -318,6 +306,47 @@ $('.text-clear').on('click', e => {
 $('.code-copy').on('click', e => {
 	$(e.target.dataset.target).select();
 	document.execCommand('copy');
+});
+
+$('#ddl-modal').on('show.bs.modal', function() {
+	var brackets = new Array(/\[(.*?)\]/g, /\((.*?)\)/g)[$('.ddl-brackets select').val()];
+	var separator = new Array(',', ';', '/', ' ')[$('.ddl-separator select').val()];
+
+	var quote = $('#ddl-quote').prop('checked');
+	var mix = $('#ddl-mix').prop('checked') ? '' : ' mix="false"';
+	var align = $('#ddl-align').prop('checked') ? ' align="left"' : '';
+
+	var text = $('#ddl-text').val();
+	var code = '<dropdownlist' + mix + '>\n\t<sentence>';
+
+	var number = 1, words = [];
+	text.split(/\r?\n/).forEach(line => {
+		if (line === '') return;
+
+		var p = line.trim().replace(brackets, (m, items) => {
+			var word = '\n\n\t<word number="' + number + '">';
+
+			items.trim().split(separator).forEach((item, i) => {
+				var cur = item.trim();
+				if (cur === '') return;
+
+				if (quote) cur = '<style type="quote">' + cur + '</style>';
+				word += '\n\t\t<variant valid="false"><varianttext>' + cur + '</varianttext></variant>';
+			});
+
+			word += '\n\t</word>';
+			words.push(word);
+
+			return '<field number="' + (number++) + '"/>';
+		});
+
+		if (quote) p = '<style type="quote">' + p + '</style>';
+		code += '\n\t\t<p' + align + '>' + p + '</p>';
+	});
+
+	code += '\n\t</sentence>' + words.join('') + '\n</dropdownlist>';
+
+	$('#ddl-modal .code').val(code);
 });
 
 $.fn.shuffle = function() {
@@ -366,49 +395,8 @@ $('#dnd-modal').on('show.bs.modal', function() {
 	$('#dnd-modal .code').val(code);
 });
 
-$('#ddl-modal').on('show.bs.modal', function() {
-	var brackets = new Array(/\[(.*?)\]/g, /\((.*?)\)/g)[$('.ddl-brackets select').val()];
-	var separator = new Array(',', ';', '/', ' ')[$('.ddl-separator select').val()];
-
-	var quote = $('#ddl-quote').prop('checked');
-	var mix = $('#ddl-mix').prop('checked') ? '' : ' mix="false"';
-	var align = $('#ddl-align').prop('checked') ? ' align="left"' : '';
-
-	var text = $('#ddl-text').val();
-	var code = '<dropdownlist' + mix + '>\n\t<sentence>';
-
-	var number = 1, words = [];
-	text.split(/\r?\n/).forEach(line => {
-		if (line === '') return;
-
-		var p = line.trim().replace(brackets, (m, items) => {
-			var word = '\n\n\t<word number="' + number + '">';
-
-			items.trim().split(separator).forEach((item, i) => {
-				var cur = item.trim();
-				if (cur === '') return;
-
-				if (quote) cur = '<style type="quote">' + cur + '</style>';
-				word += '\n\t\t<variant valid="false"><varianttext>' + cur + '</varianttext></variant>';
-			});
-
-			word += '\n\t</word>';
-			words.push(word);
-
-			return '<field number="' + (number++) + '"/>';
-		});
-
-		if (quote) p = '<style type="quote">' + p + '</style>';
-		code += '\n\t\t<p' + align + '>' + p + '</p>';
-	});
-
-	code += '\n\t</sentence>' + words.join('') + '\n</dropdownlist>';
-
-	$('#ddl-modal .code').val(code);
-});
-
 $('#label-modal').on('show.bs.modal', function() {
-	var id = $('#label-canvas .base').data('file').split('.').slice(0, -1).join('.');
+	var id = $('#label-canvas .base').data('file').split('.').slice(0, -1).join('.') || '';
 	var cw = $('#label-canvas').width() || '0';
 	var ch = $('#label-canvas').height() || '0';
 	var code = '<figure align="center">\n\t<object excel="' + id + '" width="' + cw + '" height="' + ch + '" border="0">\n';

@@ -158,15 +158,16 @@ button.text-clear:active {
 	background-size: contain;
 }
 
-.canvas .ui-draggable:not(.ui-draggable-dragging) {
+.canvas .ui-draggable-handle {
 	cursor: grab;
 }
 
-.canvas .ui-draggable:active {
+.canvas .ui-draggable-handle:active,
+.canvas .ui-draggable-handle.ui-draggable-dragging {
 	cursor: grabbing;
 }
 
-.canvas .ui-draggable:focus {
+.canvas .ui-draggable-handle:focus {
 	z-index: 1;
 	outline: none;
 }
@@ -190,10 +191,16 @@ button.text-clear:active {
 	line-height: 0.8;
 	color: #000;
 	white-space: nowrap;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .canvas .label:focus {
 	background-color: rgba(0, 0, 0, 0.15);
+}
+
+.canvas.hl .label {
+	background-color: rgba(255, 0, 255, 0.45);
 }
 
 .canvas .label > input {
